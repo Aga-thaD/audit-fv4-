@@ -27,6 +27,10 @@ return new class extends Migration
             $table->boolean('audit_view')->default(false);
             $table->boolean('audit_update')->default(false);
             $table->boolean('audit_delete')->default(false);
+            $table->boolean('user_create')->default(false);
+            $table->boolean('user_view')->default(false);
+            $table->boolean('user_update')->default(false);
+            $table->boolean('user_delete')->default(false);
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

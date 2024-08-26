@@ -28,6 +28,10 @@ class User extends Authenticatable
         'audit_view',
         'audit_update',
         'audit_delete',
+        'user_create',
+        'user_view',
+        'user_update',
+        'user_delete',
     ];
 
     /**
