@@ -49,15 +49,15 @@ class UserResource extends Resource
                                 Forms\Components\Toggle::make('audit_view')->label('View'),
                                 Forms\Components\Toggle::make('audit_update')->label('Update'),
                                 Forms\Components\Toggle::make('audit_delete')->label('Delete'),
-                            ]),
+                            ])->columnSpan(1),
                         Forms\Components\Section::make('User')
                             ->schema([
                                 Forms\Components\Toggle::make('user_create')->label('Create'),
                                 Forms\Components\Toggle::make('user_view')->label('View'),
                                 Forms\Components\Toggle::make('user_update')->label('Update'),
                                 Forms\Components\Toggle::make('user_delete')->label('Delete'),
-                            ])
-                    ])
+                            ])->columnSpan(1)
+                    ])->columns(2)
             ]);
     }
 
