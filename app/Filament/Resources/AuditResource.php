@@ -20,7 +20,7 @@ class AuditResource extends Resource
 {
     protected static ?string $model = Audit::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-document-magnifying-glass';
 
     public static function form(Form $form): Form
     {
