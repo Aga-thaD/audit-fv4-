@@ -24,6 +24,7 @@ class Audit extends Model
         'aud_nature_of_error',
         'aud_feedback',
         'aud_screenshot',
+        'aud_status',
 
     ];
 

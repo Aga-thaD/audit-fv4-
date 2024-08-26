@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('aud_nature_of_error')->nullable();
             $table->longText('aud_feedback')->nullable();
             $table->string('aud_screenshot')->nullable();
+            $table->string('aud_status')->nullable();
             $table->timestamps();
         });
     }
