@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\AuditResource\Pages;
 use App\Filament\Resources\AuditResource\RelationManagers;
 use App\Models\Audit;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -23,7 +24,25 @@ class AuditResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\Select::make('lob')->label('LOB')
+                    ->options([
+                        'Call Entering' => 'Call Entering',
+                        'Document Processing' => 'Document Processing',
+                        // Add more options as needed
+                    ])
+                    ->reactive()
+                    ->afterStateUpdated(fn (callable $set) => $set('user_id', null)),
+                Forms\Components\Select::make('user_id')->label('Name')
+                    ->options(function (callable $get) {
+                        $lob = $get('lob');
+                        if (!$lob) {
+                            return User::all()->pluck('name', 'id');
+                        }
+                        return User::where('user_lob', $lob)->pluck('name', 'id');
+                    })
+                    ->reactive()
+                    ->searchable()
+                    ->preload(),
             ]);
     }
 
@@ -31,7 +50,8 @@ class AuditResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('lob')->label('LOB'),
+                Tables\Columns\TextColumn::make('user.name')->label('Name'),
             ])
             ->filters([
                 //
