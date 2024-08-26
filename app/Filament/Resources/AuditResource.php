@@ -145,7 +145,13 @@ class AuditResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->modifyQueryUsing(function (Builder $query) {
+                $user = Auth::user();
+                if ($user->user_role === 'Associate') {
+                    $query->where('user_id', $user->id);
+                }
+            });
     }
 
     public static function getRelations(): array
