@@ -28,6 +28,7 @@ class UserResource extends Resource
                         Forms\Components\TextInput::make('name'),
                         Forms\Components\TextInput::make('email'),
                         Forms\Components\TextInput::make('password'),
+                        Forms\Components\TextInput::make('user_lob'),
                     ])
             ]);
     }
