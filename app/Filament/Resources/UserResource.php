@@ -33,7 +33,30 @@ class UserResource extends Resource
                                 'Admin' => 'Admin',
                                 'Auditor' => 'Auditor',
                                 'Associate' => 'Associate',
-                            ]),
+                            ])
+                            ->live()
+                            ->afterStateUpdated(function ($state, callable $set) {
+                                if ($state === 'Admin' || $state === 'Auditor') {
+                                    $set('audit_create', true);
+                                    $set('audit_view', true);
+                                    $set('audit_update', true);
+                                    $set('audit_delete', true);
+                                    $set('user_create', true);
+                                    $set('user_view', true);
+                                    $set('user_update', true);
+                                    $set('user_delete', true);
+                                } elseif ($state === 'Associate') {
+                                    $set('audit_create', false);
+                                    $set('audit_view', true);
+                                    $set('audit_update', true);
+                                    $set('audit_delete', false);
+                                    $set('user_create', false);
+                                    $set('user_view', false);
+                                    $set('user_update', false);
+                                    $set('user_delete', false);
+                                }
+                            })
+                            ->native(false),
                         Forms\Components\Select::make('user_lob')->label('LOB')
                             ->options([
                                 'CALL ENTERING' => 'CALL ENTERING',
