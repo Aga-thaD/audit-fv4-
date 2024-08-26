@@ -13,6 +13,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Facades\Auth;
 
 class AuditResource extends Resource
 {
@@ -43,6 +44,10 @@ class AuditResource extends Resource
                     ->reactive()
                     ->searchable()
                     ->preload(),
+                Forms\Components\TextInput::make('aud_auditor')
+                    ->label('Auditor')
+                    ->default(fn () => Auth::user()->name)
+                    ->readOnly(),
             ]);
     }
 

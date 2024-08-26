@@ -12,6 +12,7 @@ class Audit extends Model
     protected $fillable = [
         'user_id',
         'lob',
+        'aud_auditor',
     ];
 
     /**
