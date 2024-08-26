@@ -6,6 +6,7 @@ use App\Filament\Resources\AuditResource\Pages;
 use App\Filament\Resources\AuditResource\RelationManagers;
 use App\Models\Audit;
 use App\Models\User;
+use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -47,6 +48,9 @@ class AuditResource extends Resource
                 Forms\Components\TextInput::make('aud_auditor')
                     ->label('Auditor')
                     ->default(fn () => Auth::user()->name)
+                    ->readOnly(),
+                Forms\Components\DatePicker::make('aud_date')->label('Audit Date')
+                    ->default(fn () => Carbon::today())
                     ->readOnly(),
             ]);
     }

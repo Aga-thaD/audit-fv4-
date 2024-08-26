@@ -13,6 +13,7 @@ class Audit extends Model
         'user_id',
         'lob',
         'aud_auditor',
+        'aud_date',
     ];
 
     /**
