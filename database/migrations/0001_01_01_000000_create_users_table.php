@@ -21,6 +21,12 @@ return new class extends Migration
             $table->string('user_lob')->nullable();
             $table->rememberToken();
             $table->timestamps();
+
+            //Permissions
+            $table->boolean('audit_create')->default(false);
+            $table->boolean('audit_view')->default(false);
+            $table->boolean('audit_update')->default(false);
+            $table->boolean('audit_delete')->default(false);
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

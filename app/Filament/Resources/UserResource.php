@@ -34,12 +34,22 @@ class UserResource extends Resource
                                 'Auditor' => 'Auditor',
                                 'Associate' => 'Associate',
                             ]),
-                        Forms\Components\Select::make('user_lob')
+                        Forms\Components\Select::make('user_lob')->label('LOB')
                             ->options([
                                 'CALL ENTERING' => 'CALL ENTERING',
                                 'ERG FOLLOW-UP' => 'ERG FOLLOW-UP',
                                 'DOCUMENT PROCESSING' => 'DOCUMENT PROCESSING',
                             ]),
+                    ]),
+                Forms\Components\Section::make('Permissions')
+                    ->schema([
+                        Forms\Components\Section::make('Audit Form')
+                            ->schema([
+                                Forms\Components\Toggle::make('audit_create')->label('Create'),
+                                Forms\Components\Toggle::make('audit_view')->label('View'),
+                                Forms\Components\Toggle::make('audit_update')->label('Update'),
+                                Forms\Components\Toggle::make('audit_delete')->label('Delete'),
+                            ])
                     ])
             ]);
     }

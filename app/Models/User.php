@@ -22,6 +22,12 @@ class User extends Authenticatable
         'password',
         'user_role',
         'user_lob',
+
+        //Permissions
+        'audit_create',
+        'audit_view',
+        'audit_update',
+        'audit_delete',
     ];
 
     /**
