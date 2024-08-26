@@ -113,6 +113,8 @@ class AuditResource extends Resource
                             ]),
                         Forms\Components\RichEditor::make('aud_feedback')->label('Feedback'),
                         Forms\Components\FileUpload::make('aud_screenshot')->label('Screenshot'),
+                        Forms\Components\Hidden::make('aud_status')
+                            ->default('Pending'),
                     ])
             ]);
     }
