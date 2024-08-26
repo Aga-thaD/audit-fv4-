@@ -25,14 +25,14 @@ class DatabaseSeeder extends Seeder
             'name' => 'John Doe',
             'email' => 'john.doe@teamspan.com',
             'password' => 'renzo973',
-            'user_lob' => 'Call Entering'
+            'user_lob' => 'CALL ENTERING'
         ]);
 
         User::factory()->create([
             'name' => 'Jane Doe',
             'email' => 'jane.doe@teamspan.com',
             'password' => 'renzo973',
-            'user_lob' => 'Document Processing'
+            'user_lob' => 'ERG FOLLOW-UP'
         ]);
     }
 }
