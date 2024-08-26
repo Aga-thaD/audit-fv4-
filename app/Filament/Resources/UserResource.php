@@ -28,7 +28,12 @@ class UserResource extends Resource
                         Forms\Components\TextInput::make('name'),
                         Forms\Components\TextInput::make('email'),
                         Forms\Components\TextInput::make('password'),
-                        Forms\Components\TextInput::make('user_lob'),
+                        Forms\Components\Select::make('user_lob')
+                            ->options([
+                                'CALL ENTERING' => 'CALL ENTERING',
+                                'ERG FOLLOW-UP' => 'ERG FOLLOW-UP',
+                                'DOCUMENT PROCESSING' => 'DOCUMENT PROCESSING',
+                            ]),
                     ])
             ]);
     }
