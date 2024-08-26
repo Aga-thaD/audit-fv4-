@@ -53,6 +53,30 @@ class AuditResource extends Resource
                     ->default(fn () => Carbon::today())
                     ->readOnly(),
                 Forms\Components\DatePicker::make('aud_date_processed')->label('Date Processed'),
+                Forms\Components\Select::make('aud_time_processed')->label('Time Processed')
+                    ->options([
+                        'Prime' => 'Prime',
+                        'Afterhours' => 'Afterhours',
+                    ])
+                    ->native(false),
+                Forms\Components\TextInput::make('aud_case_number')->label('Case/WO #'),
+                Forms\Components\Select::make('aud_audit_type')->label('Type of Audit')
+                    ->options([
+                        'Internal' => 'Internal',
+                        'Client' => 'Client',
+                    ])
+                    ->native(false),
+                Forms\Components\TextInput::make('aud_customer')->label('Customer'),
+                Forms\Components\Select::make('aud_area_hit')->label('Area Hit')
+                    ->options([
+                        'Work Order Level' => 'Work Order Level',
+                        'Case Level' => 'Case Level',
+                        'Portal' => 'Portal',
+                        'Emails' => 'Emails',
+                        'Others' => 'Others',
+                        'Not Applicable' => 'Not Applicable',
+                    ])
+                    ->native(false),
             ]);
     }
 

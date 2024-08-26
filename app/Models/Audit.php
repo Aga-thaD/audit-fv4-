@@ -15,6 +15,12 @@ class Audit extends Model
         'aud_auditor',
         'aud_date',
         'aud_date_processed',
+        'aud_time_processed',
+        'aud_case_number',
+        'aud_audit_type',
+        'aud_customer',
+        'aud_area_hit',
+
     ];
 
     /**

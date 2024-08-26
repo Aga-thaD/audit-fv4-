@@ -18,6 +18,11 @@ return new class extends Migration
             $table->string('aud_auditor')->nullable();
             $table->dateTime('aud_date')->nullable();
             $table->dateTime('aud_date_processed')->nullable();
+            $table->string('aud_time_processed')->nullable();
+            $table->string('aud_case_number')->nullable();
+            $table->string('aud_audit_type')->nullable();
+            $table->string('aud_customer')->nullable();
+            $table->string('aud_area_hit')->nullable();
             $table->timestamps();
         });
     }
