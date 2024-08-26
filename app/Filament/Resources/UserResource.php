@@ -41,6 +41,10 @@ class UserResource extends Resource
                                     $set('audit_view', true);
                                     $set('audit_update', true);
                                     $set('audit_delete', true);
+                                    $set('pqc_create', true);
+                                    $set('pqc_view', true);
+                                    $set('pqc_update', true);
+                                    $set('pqc_delete', true);
                                     $set('user_create', true);
                                     $set('user_view', true);
                                     $set('user_update', true);
@@ -50,6 +54,10 @@ class UserResource extends Resource
                                     $set('audit_view', true);
                                     $set('audit_update', true);
                                     $set('audit_delete', false);
+                                    $set('pqc_create', false);
+                                    $set('pqc_view', true);
+                                    $set('pqc_update', true);
+                                    $set('pqc_delete', false);
                                     $set('user_create', false);
                                     $set('user_view', false);
                                     $set('user_update', false);
@@ -73,14 +81,21 @@ class UserResource extends Resource
                                 Forms\Components\Toggle::make('audit_update')->label('Update'),
                                 Forms\Components\Toggle::make('audit_delete')->label('Delete'),
                             ])->columnSpan(1),
+                        Forms\Components\Section::make('Phone QC')
+                            ->schema([
+                                Forms\Components\Toggle::make('pqc_create')->label('Create'),
+                                Forms\Components\Toggle::make('pqc_view')->label('View'),
+                                Forms\Components\Toggle::make('pqc_update')->label('Update'),
+                                Forms\Components\Toggle::make('pqc_delete')->label('Delete'),
+                            ])->columnSpan(1),
                         Forms\Components\Section::make('User')
                             ->schema([
                                 Forms\Components\Toggle::make('user_create')->label('Create'),
                                 Forms\Components\Toggle::make('user_view')->label('View'),
                                 Forms\Components\Toggle::make('user_update')->label('Update'),
                                 Forms\Components\Toggle::make('user_delete')->label('Delete'),
-                            ])->columnSpan(1)
-                    ])->columns(2)
+                            ])->columnSpan(1),
+                    ])->columns(3)
             ]);
     }
 

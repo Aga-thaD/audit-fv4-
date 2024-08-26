@@ -27,6 +27,10 @@ return new class extends Migration
             $table->boolean('audit_view')->default(false);
             $table->boolean('audit_update')->default(false);
             $table->boolean('audit_delete')->default(false);
+            $table->boolean('pqc_create')->default(false);
+            $table->boolean('pqc_view')->default(false);
+            $table->boolean('pqc_update')->default(false);
+            $table->boolean('pqc_delete')->default(false);
             $table->boolean('user_create')->default(false);
             $table->boolean('user_view')->default(false);
             $table->boolean('user_update')->default(false);
