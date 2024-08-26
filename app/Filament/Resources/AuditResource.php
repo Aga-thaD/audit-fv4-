@@ -59,8 +59,11 @@ class AuditResource extends Resource
                                     ->label('Auditor')
                                     ->default(fn () => Auth::user()->name)
                                     ->readOnly(),
-                                Forms\Components\TextInput::make('aud_date')->label('Audit Date')
-                                    ->default(fn () => Carbon::today())
+                                Forms\Components\DatePicker::make('aud_date')
+                                    ->label('Audit Date')
+                                    ->default(fn () => Carbon::today()->toDateString())
+                                    ->format('m-d-Y')
+                                    ->displayFormat('m-d-Y')
                                     ->readOnly(),
                                 Forms\Components\DatePicker::make('aud_date_processed')->label('Date Processed'),
                                 Forms\Components\Select::make('aud_time_processed')->label('Time Processed')
