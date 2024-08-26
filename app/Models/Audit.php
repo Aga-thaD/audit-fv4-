@@ -20,6 +20,8 @@ class Audit extends Model
         'aud_audit_type',
         'aud_customer',
         'aud_area_hit',
+        'aud_error_category',
+        'aud_nature_of_error',
 
     ];
 

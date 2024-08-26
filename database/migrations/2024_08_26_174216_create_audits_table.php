@@ -23,6 +23,8 @@ return new class extends Migration
             $table->string('aud_audit_type')->nullable();
             $table->string('aud_customer')->nullable();
             $table->string('aud_area_hit')->nullable();
+            $table->string('aud_error_category')->nullable();
+            $table->string('aud_nature_of_error')->nullable();
             $table->timestamps();
         });
     }
