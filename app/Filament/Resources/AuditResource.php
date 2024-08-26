@@ -121,8 +121,13 @@ class AuditResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('aud_case_number')->label('Case/WO #'),
+                Tables\Columns\TextColumn::make('aud_error_category')->label('Error Category'),
                 Tables\Columns\TextColumn::make('lob')->label('LOB'),
                 Tables\Columns\TextColumn::make('user.name')->label('Name'),
+                Tables\Columns\TextColumn::make('aud_auditor')->label('Auditor'),
+                Tables\Columns\TextColumn::make('aud_customer')->label('Customer'),
+                Tables\Columns\TextColumn::make('aud_date')->label('Audit Date'),
             ])
             ->filters([
                 //
