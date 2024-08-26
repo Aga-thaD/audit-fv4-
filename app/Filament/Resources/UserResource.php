@@ -28,6 +28,12 @@ class UserResource extends Resource
                         Forms\Components\TextInput::make('name'),
                         Forms\Components\TextInput::make('email'),
                         Forms\Components\TextInput::make('password'),
+                        Forms\Components\Select::make('user_role')->label('Role')
+                            ->options([
+                                'Admin' => 'Admin',
+                                'Auditor' => 'Auditor',
+                                'Associate' => 'Associate',
+                            ]),
                         Forms\Components\Select::make('user_lob')
                             ->options([
                                 'CALL ENTERING' => 'CALL ENTERING',
@@ -44,7 +50,8 @@ class UserResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('email'),
-                Tables\Columns\TextColumn::make('user_lob'),
+                Tables\Columns\TextColumn::make('user_role')->label('Role'),
+                Tables\Columns\TextColumn::make('user_lob')->label('LOB'),
             ])
             ->filters([
                 //

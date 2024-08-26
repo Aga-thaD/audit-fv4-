@@ -18,13 +18,15 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'Renzo Miranda',
             'email' => 'renzo.miranda@teamspan.com',
-            'password' => 'renzo973'
+            'password' => 'renzo973',
+            'user_role' => 'Admin',
         ]);
 
         User::factory()->create([
             'name' => 'John Doe',
             'email' => 'john.doe@teamspan.com',
             'password' => 'renzo973',
+            'user_role' => 'Associate',
             'user_lob' => 'CALL ENTERING'
         ]);
 
@@ -32,6 +34,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Jane Doe',
             'email' => 'jane.doe@teamspan.com',
             'password' => 'renzo973',
+            'user_role' => 'Associate',
             'user_lob' => 'ERG FOLLOW-UP'
         ]);
     }
