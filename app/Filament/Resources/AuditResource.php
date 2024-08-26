@@ -26,88 +26,94 @@ class AuditResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('lob')
-                    ->label('LOB')
-                    ->options([
-                        'CALL ENTERING' => 'CALL ENTERING',
-                        'ERG FOLLOW-UP' => 'ERG FOLLOW-UP',
-                        'DOCUMENT PROCESSING' => 'DOCUMENT PROCESSING',
+                Forms\Components\Section::make()
+                    ->schema([
+                        Forms\Components\Grid::make()
+                            ->schema([
+                                Forms\Components\Select::make('lob')
+                                    ->label('LOB')
+                                    ->options([
+                                        'CALL ENTERING' => 'CALL ENTERING',
+                                        'ERG FOLLOW-UP' => 'ERG FOLLOW-UP',
+                                        'DOCUMENT PROCESSING' => 'DOCUMENT PROCESSING',
+                                    ])
+                                    ->reactive()
+                                    ->afterStateUpdated(function (callable $set) {
+                                        $set('user_id', null);
+                                        $set('aud_error_category', null);
+                                        $set('aud_error_type', null);
+                                    })
+                                    ->required(),
+                                Forms\Components\Select::make('user_id')->label('Name')
+                                    ->options(function (callable $get) {
+                                        $lob = $get('lob');
+                                        if (!$lob) {
+                                            return User::all()->pluck('name', 'id');
+                                        }
+                                        return User::where('user_lob', $lob)->pluck('name', 'id');
+                                    })
+                                    ->reactive()
+                                    ->searchable()
+                                    ->preload(),
+                                Forms\Components\TextInput::make('aud_auditor')
+                                    ->label('Auditor')
+                                    ->default(fn () => Auth::user()->name)
+                                    ->readOnly(),
+                                Forms\Components\TextInput::make('aud_date')->label('Audit Date')
+                                    ->default(fn () => Carbon::today())
+                                    ->readOnly(),
+                                Forms\Components\DatePicker::make('aud_date_processed')->label('Date Processed'),
+                                Forms\Components\Select::make('aud_time_processed')->label('Time Processed')
+                                    ->options([
+                                        'Prime' => 'Prime',
+                                        'Afterhours' => 'Afterhours',
+                                    ])
+                                    ->native(false),
+                                Forms\Components\TextInput::make('aud_case_number')->label('Case/WO #'),
+                                Forms\Components\Select::make('aud_audit_type')->label('Type of Audit')
+                                    ->options([
+                                        'Internal' => 'Internal',
+                                        'Client' => 'Client',
+                                    ])
+                                    ->native(false),
+                                Forms\Components\TextInput::make('aud_customer')->label('Customer'),
+                                Forms\Components\Select::make('aud_area_hit')->label('Area Hit')
+                                    ->options([
+                                        'Work Order Level' => 'Work Order Level',
+                                        'Case Level' => 'Case Level',
+                                        'Portal' => 'Portal',
+                                        'Emails' => 'Emails',
+                                        'Others' => 'Others',
+                                        'Not Applicable' => 'Not Applicable',
+                                    ])
+                                    ->native(false),
+                                Forms\Components\Select::make('aud_error_category')
+                                    ->label('Error Category')
+                                    ->options([
+                                        'CRITICAL' => 'CRITICAL',
+                                        'MAJOR' => 'MAJOR',
+                                        'MINOR' => 'MINOR',
+                                    ])
+                                    ->reactive()
+                                    ->afterStateUpdated(fn (callable $set) => $set('aud_error_type', null))
+                                    ->required(),
+                                Forms\Components\Select::make('aud_type_of_error')
+                                    ->label('Error Type')
+                                    ->options(function (callable $get) {
+                                        $lob = $get('lob');
+                                        $category = $get('aud_error_category');
+                                        if (!$lob || !$category) {
+                                            return [];
+                                        }
+                                        return self::getErrorTypes()[$lob][$category] ?? [];
+                                    })
+                                    ->reactive()
+                                    ->searchable()
+                                    ->required(),
+                            ]),
+                        Forms\Components\RichEditor::make('aud_feedback')->label('Feedback'),
+                        Forms\Components\FileUpload::make('aud_screenshot')->label('Screenshot'),
                     ])
-                    ->reactive()
-                    ->afterStateUpdated(function (callable $set) {
-                        $set('user_id', null);
-                        $set('aud_error_category', null);
-                        $set('aud_error_type', null);
-                    })
-                    ->required(),
-                Forms\Components\Select::make('user_id')->label('Name')
-                    ->options(function (callable $get) {
-                        $lob = $get('lob');
-                        if (!$lob) {
-                            return User::all()->pluck('name', 'id');
-                        }
-                        return User::where('user_lob', $lob)->pluck('name', 'id');
-                    })
-                    ->reactive()
-                    ->searchable()
-                    ->preload(),
-                Forms\Components\TextInput::make('aud_auditor')
-                    ->label('Auditor')
-                    ->default(fn () => Auth::user()->name)
-                    ->readOnly(),
-                Forms\Components\TextInput::make('aud_date')->label('Audit Date')
-                    ->default(fn () => Carbon::today())
-                    ->readOnly(),
-                Forms\Components\DatePicker::make('aud_date_processed')->label('Date Processed'),
-                Forms\Components\Select::make('aud_time_processed')->label('Time Processed')
-                    ->options([
-                        'Prime' => 'Prime',
-                        'Afterhours' => 'Afterhours',
-                    ])
-                    ->native(false),
-                Forms\Components\TextInput::make('aud_case_number')->label('Case/WO #'),
-                Forms\Components\Select::make('aud_audit_type')->label('Type of Audit')
-                    ->options([
-                        'Internal' => 'Internal',
-                        'Client' => 'Client',
-                    ])
-                    ->native(false),
-                Forms\Components\TextInput::make('aud_customer')->label('Customer'),
-                Forms\Components\Select::make('aud_area_hit')->label('Area Hit')
-                    ->options([
-                        'Work Order Level' => 'Work Order Level',
-                        'Case Level' => 'Case Level',
-                        'Portal' => 'Portal',
-                        'Emails' => 'Emails',
-                        'Others' => 'Others',
-                        'Not Applicable' => 'Not Applicable',
-                    ])
-                    ->native(false),
-                Forms\Components\Select::make('aud_error_category')
-                    ->label('Error Category')
-                    ->options([
-                        'CRITICAL' => 'CRITICAL',
-                        'MAJOR' => 'MAJOR',
-                        'MINOR' => 'MINOR',
-                    ])
-                    ->reactive()
-                    ->afterStateUpdated(fn (callable $set) => $set('aud_error_type', null))
-                    ->required(),
-                Forms\Components\Select::make('aud_type_of_error')
-                    ->label('Error Type')
-                    ->options(function (callable $get) {
-                        $lob = $get('lob');
-                        $category = $get('aud_error_category');
-                        if (!$lob || !$category) {
-                            return [];
-                        }
-                        return self::getErrorTypes()[$lob][$category] ?? [];
-                    })
-                    ->reactive()
-                    ->searchable()
-                    ->required(),
-                Forms\Components\RichEditor::make('aud_feedback')->label('Feedback'),
-                Forms\Components\FileUpload::make('aud_screenshot')->label('Screenshot'),
             ]);
     }
 
