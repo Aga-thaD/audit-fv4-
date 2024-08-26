@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained();
             $table->string('lob')->nullable();
             $table->string('aud_auditor')->nullable();
-            $table->dateTime('aud_date')->nullable();
-            $table->dateTime('aud_date_processed')->nullable();
+            $table->date('aud_date')->nullable();
+            $table->date('aud_date_processed')->nullable();
             $table->string('aud_time_processed')->nullable();
             $table->string('aud_case_number')->nullable();
             $table->string('aud_audit_type')->nullable();
