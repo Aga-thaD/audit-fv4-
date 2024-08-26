@@ -24,13 +24,15 @@ class DatabaseSeeder extends Seeder
         User::factory()->create([
             'name' => 'John Doe',
             'email' => 'john.doe@teamspan.com',
-            'password' => 'renzo973'
+            'password' => 'renzo973',
+            'user_lob' => 'Call Entering'
         ]);
 
         User::factory()->create([
             'name' => 'Jane Doe',
             'email' => 'jane.doe@teamspan.com',
-            'password' => 'renzo973'
+            'password' => 'renzo973',
+            'user_lob' => 'Document Processing'
         ]);
     }
 }
