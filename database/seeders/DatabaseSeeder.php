@@ -20,5 +20,17 @@ class DatabaseSeeder extends Seeder
             'email' => 'renzo.miranda@teamspan.com',
             'password' => 'renzo973'
         ]);
+
+        User::factory()->create([
+            'name' => 'John Doe',
+            'email' => 'john.doe@teamspan.com',
+            'password' => 'renzo973'
+        ]);
+
+        User::factory()->create([
+            'name' => 'Jane Doe',
+            'email' => 'jane.doe@teamspan.com',
+            'password' => 'renzo973'
+        ]);
     }
 }
