@@ -14,6 +14,7 @@ class Audit extends Model
         'lob',
         'aud_auditor',
         'aud_date',
+        'aud_date_processed',
     ];
 
     /**

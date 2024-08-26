@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('lob')->nullable();
             $table->string('aud_auditor')->nullable();
             $table->dateTime('aud_date')->nullable();
+            $table->dateTime('aud_date_processed')->nullable();
             $table->timestamps();
         });
     }
