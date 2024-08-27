@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Resources\PhoneQCResource\Pages;
 use App\Filament\Resources\PhoneQCResource\RelationManagers;
 use App\Models\PhoneQC;
+use App\Models\User;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -25,7 +26,23 @@ class PhoneQCResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Forms\Components\Select::make('pqc_lob')->label('LOB')
+                    ->options([
+                        "ERG FOLLOW-UP" => "ERG FOLLOW-UP",
+                    ])
+                    ->reactive(),
+
+                Forms\Components\Select::make('user_id')->label('Name')
+                    ->options(function (callable $get) {
+                        $lob = $get('pqc_lob');
+                        if (!$lob) {
+                            return User::all()->pluck('name', 'id');
+                        }
+                        return User::where('user_lob', $lob)->pluck('name', 'id');
+                    })
+                    ->reactive()
+                    ->searchable()
+                    ->preload(),
             ]);
     }
 

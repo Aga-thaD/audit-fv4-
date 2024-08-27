@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('phone_q_c_s', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained();
+            $table->string('pqc_lob')->nullable();
             $table->timestamps();
         });
     }
