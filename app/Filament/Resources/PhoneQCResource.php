@@ -122,7 +122,9 @@ class PhoneQCResource extends Resource
                                     })
                                     ->reactive()
                                     ->searchable(),
-                            ])->addActionLabel('Add CTQ')->columns(2)
+                                Forms\Components\TextInput::make('pqc_weightage')->label('Weightage')
+                                    ->readOnly()
+                            ])->addActionLabel('Add CTQ')->columns(3)
                     ]),
             ])->columns(2);
     }
