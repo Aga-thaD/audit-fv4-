@@ -2,6 +2,7 @@
 
 namespace App\Filament\Pages\Auth;
 
+use Filament\Forms\Components\Select;
 use Filament\Pages\Page;
 use Filament\Pages\Auth\Register as BaseRegister;
 
@@ -17,9 +18,22 @@ class Register extends BaseRegister
                         $this->getEmailFormComponent(),
                         $this->getPasswordFormComponent(),
                         $this->getPasswordConfirmationFormComponent(),
+                        $this->getRoleFormComponent(),
                     ])
                     ->statePath('data'),
             ),
         ];
+    }
+
+    protected function getRoleFormComponent()
+    {
+        return Select::make('user_lob')
+            ->options([
+                'CALL ENTERING' => 'CALL ENTERING',
+                'ERG FOLLOW-UP' => 'ERG FOLLOW-UP',
+                'DOCUMENT PROCESSING' => 'DOCUMENT PROCESSING',
+            ])
+            ->native(false)
+            ->required();
     }
 }
