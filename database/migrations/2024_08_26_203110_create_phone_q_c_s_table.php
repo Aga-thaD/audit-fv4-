@@ -25,6 +25,7 @@ return new class extends Migration
             $table->longText('pqc_strengths')->nullable();
             $table->longText('pqc_opportunities')->nullable();
             $table->string('pqc_call_recording')->nullable();
+            $table->json('pqc_scorecard')->nullable();
             $table->timestamps();
         });
     }
