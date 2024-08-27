@@ -30,6 +30,8 @@ class PhoneQCResource extends Resource
             ->schema([
                 Forms\Components\Section::make('Details')
                     ->schema([
+                        Forms\Components\Hidden::make('pqc_status')
+                            ->default('Pending'),
                         Forms\Components\Select::make('pqc_lob')->label('LOB')
                             ->options([
                                 "ERG FOLLOW-UP" => "ERG FOLLOW-UP",
