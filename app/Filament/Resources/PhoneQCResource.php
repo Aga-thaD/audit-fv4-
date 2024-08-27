@@ -79,10 +79,47 @@ class PhoneQCResource extends Resource
                     ])->columnSpan(1),
                 Forms\Components\Section::make('Scorecard')
                     ->schema([
-                        Forms\Components\Repeater::make('pqc_scorecard')
+                        Forms\Components\Repeater::make('pqc_scorecard')->label('Critical to Quality (CTQ)')
                             ->schema([
-
-                            ])
+                                Forms\Components\Select::make('category')->label('Category')
+                                    ->options([
+                                        'Opening and Closing Spiel' => 'Opening and Closing Spiel',
+                                        'Customer Experience' => 'Customer Experience',
+                                        'Procedural Adherence' => 'Procedural Adherence',
+                                    ])
+                                    ->reactive()
+                                    ->native(false),
+                                Forms\Components\Select::make('sub_category')->label('Sub-Category')
+                                    ->options(function (callable $get) {
+                                        $category = $get('category');
+                                        switch ($category) {
+                                            case 'Opening and Closing Spiel':
+                                                return [
+                                                    'Name (3)' => 'Name (3)',
+                                                    'Branding (3)' => 'Branding (3)',
+                                                    'Compliance - Recorded Line (5)' => 'Compliance - Recorded Line (5)',
+                                                    'Thank you and Goodbye (2)' => 'Thank you and Goodbye (2)',
+                                                ];
+                                            case 'Customer Experience':
+                                                return [
+                                                    'Active Listening / Comprehension / Communication (10)' => 'Active Listening / Comprehension / Communication (10)',
+                                                    'Empathy' => 'Empathy (10)',
+                                                    'Professionalism' => 'Professionalism (20)',
+                                                ];
+                                            case 'Procedural Adherence':
+                                                return [
+                                                    'Proper Probing (20)' => 'Proper Probing (20)',
+                                                    'Process Mastery (20)' => 'Process Mastery (20)',
+                                                    'Sense of Urgency (10)' => 'Sense of Urgency (10)',
+                                                    'Accuracy (10)' => 'Accuracy (10)',
+                                                ];
+                                            default:
+                                                return [];
+                                        }
+                                    })
+                                    ->reactive()
+                                    ->searchable(),
+                            ])->addActionLabel('Add CTQ')->columns(2)
                     ]),
             ])->columns(2);
     }
