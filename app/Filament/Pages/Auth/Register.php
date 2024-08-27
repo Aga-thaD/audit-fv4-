@@ -2,6 +2,8 @@
 
 namespace App\Filament\Pages\Auth;
 
+use App\Models\User;
+use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Select;
 use Filament\Pages\Page;
 use Filament\Pages\Auth\Register as BaseRegister;
@@ -19,6 +21,7 @@ class Register extends BaseRegister
                         $this->getPasswordFormComponent(),
                         $this->getPasswordConfirmationFormComponent(),
                         $this->getRoleFormComponent(),
+                        $this->getHiddenRoleComponent(),
                     ])
                     ->statePath('data'),
             ),
@@ -35,5 +38,11 @@ class Register extends BaseRegister
             ])
             ->native(false)
             ->required();
+    }
+
+    protected function getHiddenRoleComponent()
+    {
+        return Hidden::make('user_role')
+            ->default('Associate');
     }
 }
