@@ -26,7 +26,7 @@ class AuditResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Section::make()
+                Forms\Components\Section::make('Details')
                     ->schema([
                         Forms\Components\Grid::make()
                             ->schema([

@@ -15,6 +15,16 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained();
             $table->string('pqc_lob')->nullable();
+            $table->string('pqc_case_number')->nullable();
+            $table->string('pqc_auditor')->nullable();
+            $table->date('pqc_audit_date')->nullable();
+            $table->date('pqc_date_processed')->nullable();
+            $table->string('pqc_time_processed')->nullable();
+            $table->string('pqc_type_of_call')->nullable();
+            $table->longText('pqc_call_summary')->nullable();
+            $table->longText('pqc_strengths')->nullable();
+            $table->longText('pqc_opportunities')->nullable();
+            $table->string('pqc_call_recording')->nullable();
             $table->timestamps();
         });
     }
