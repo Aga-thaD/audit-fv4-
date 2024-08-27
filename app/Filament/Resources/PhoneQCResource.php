@@ -20,7 +20,7 @@ class PhoneQCResource extends Resource
 {
     protected static ?string $model = PhoneQC::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-phone';
 
     protected static ?string $modelLabel = 'Phone QC';
 
