@@ -167,7 +167,11 @@ class PhoneQCResource extends Resource
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('pqc_lob')->label('LOB'),
+                Tables\Columns\TextColumn::make('user.name')->label('Name'),
+                Tables\Columns\TextColumn::make('pqc_auditor')->label('Auditor'),
+                Tables\Columns\TextColumn::make('pqc_date')->label('Audit Date'),
+                Tables\Columns\TextColumn::make('pqc_score')->label('Score'),
             ])
             ->filters([
                 //
