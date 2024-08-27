@@ -120,6 +120,22 @@ class PhoneQCResource extends Resource
                                                 return [];
                                         }
                                     })
+                                    ->afterStateUpdated(function (callable $set, $state) {
+                                        $weightageMap = [
+                                            'Name' => 3,
+                                            'Branding' => 3,
+                                            'Compliance - Recorded Line' => 5,
+                                            'Thank you and Goodbye' => 2,
+                                            'Active Listening / Comprehension / Communication' => 10,
+                                            'Empathy' => 10,
+                                            'Professionalism' => 20,
+                                            'Proper Probing' => 20,
+                                            'Process Mastery' => 20,
+                                            'Sense of Urgency' => 10,
+                                            'Accuracy' => 10,
+                                        ];
+                                        $set('pqc_weightage', $weightageMap[$state] ?? null);
+                                    })
                                     ->reactive()
                                     ->searchable(),
                                 Forms\Components\TextInput::make('pqc_weightage')->label('Weightage')
