@@ -8,7 +8,7 @@ use App\Models\User;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
 
-class StatsOverview extends BaseWidget
+class StatsOverview1stRow extends BaseWidget
 {
     protected function getStats(): array
     {
