@@ -27,7 +27,7 @@ class Register extends BaseRegister
 
     protected function getRoleFormComponent()
     {
-        return Select::make('user_lob')
+        return Select::make('user_lob')->label('LOB')
             ->options([
                 'CALL ENTERING' => 'CALL ENTERING',
                 'ERG FOLLOW-UP' => 'ERG FOLLOW-UP',
