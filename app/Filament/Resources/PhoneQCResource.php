@@ -79,6 +79,9 @@ class PhoneQCResource extends Resource
                     ])->columnSpan(1),
                 Forms\Components\Section::make('Scorecard')
                     ->schema([
+                        Forms\Components\TextInput::make('pqc_score')->label('Score')
+                            ->default(100)
+                            ->readOnly(),
                         Forms\Components\Repeater::make('pqc_scorecard')->label('Critical to Quality (CTQ)')
                             ->schema([
                                 Forms\Components\Select::make('category')->label('Category')
