@@ -98,23 +98,23 @@ class PhoneQCResource extends Resource
                                         switch ($category) {
                                             case 'Opening and Closing Spiel':
                                                 return [
-                                                    'Name (3)' => 'Name (3)',
-                                                    'Branding (3)' => 'Branding (3)',
-                                                    'Compliance - Recorded Line (5)' => 'Compliance - Recorded Line (5)',
-                                                    'Thank you and Goodbye (2)' => 'Thank you and Goodbye (2)',
+                                                    'Name' => 'Name',
+                                                    'Branding' => 'Branding',
+                                                    'Compliance - Recorded Line' => 'Compliance - Recorded Line',
+                                                    'Thank you and Goodbye' => 'Thank you and Goodbye',
                                                 ];
                                             case 'Customer Experience':
                                                 return [
-                                                    'Active Listening / Comprehension / Communication (10)' => 'Active Listening / Comprehension / Communication (10)',
-                                                    'Empathy' => 'Empathy (10)',
-                                                    'Professionalism' => 'Professionalism (20)',
+                                                    'Active Listening / Comprehension / Communication' => 'Active Listening / Comprehension / Communication',
+                                                    'Empathy' => 'Empathy',
+                                                    'Professionalism' => 'Professionalism',
                                                 ];
                                             case 'Procedural Adherence':
                                                 return [
-                                                    'Proper Probing (20)' => 'Proper Probing (20)',
-                                                    'Process Mastery (20)' => 'Process Mastery (20)',
-                                                    'Sense of Urgency (10)' => 'Sense of Urgency (10)',
-                                                    'Accuracy (10)' => 'Accuracy (10)',
+                                                    'Proper Probing' => 'Proper Probing',
+                                                    'Process Mastery' => 'Process Mastery',
+                                                    'Sense of Urgency' => 'Sense of Urgency',
+                                                    'Accuracy' => 'Accuracy',
                                                 ];
                                             default:
                                                 return [];
