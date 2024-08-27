@@ -122,7 +122,7 @@ class PhoneQCResource extends Resource
                                                 return [];
                                         }
                                     })
-                                    ->afterStateUpdated(function (callable $set, $state) {
+                                    ->afterStateUpdated(function (callable $set, $state, callable $get) {
                                         $weightageMap = [
                                             'Name' => 3,
                                             'Branding' => 3,
@@ -136,13 +136,29 @@ class PhoneQCResource extends Resource
                                             'Sense of Urgency' => 10,
                                             'Accuracy' => 10,
                                         ];
-                                        $set('pqc_weightage', $weightageMap[$state] ?? null);
+                                        $weightage = $weightageMap[$state] ?? 0;
+                                        $set('pqc_weightage', $weightage);
+
+                                        // Recalculate the total score
+                                        $scorecard = $get('../../pqc_scorecard');
+                                        $totalWeightage = collect($scorecard)->sum('pqc_weightage');
+                                        $set('../../pqc_score', 100 - $totalWeightage);
                                     })
                                     ->reactive()
                                     ->searchable(),
                                 Forms\Components\TextInput::make('pqc_weightage')->label('Weightage')
                                     ->readOnly()
-                            ])->addActionLabel('Add CTQ')->columns(3)
+                            ])->columns(3)
+                            ->deleteAction(
+                                fn (Forms\Components\Actions\Action $action) => $action
+                                    ->after(function (Forms\Components\Repeater $component, callable $get, callable $set) {
+                                        // Recalculate the total score after deletion
+                                        $scorecard = $get('pqc_scorecard');
+                                        $totalWeightage = collect($scorecard)->sum('pqc_weightage');
+                                        $set('pqc_score', 100 - $totalWeightage);
+                                    })
+                            )
+                            ->addActionLabel('Add CTQ')
                     ]),
             ])->columns(2);
     }
