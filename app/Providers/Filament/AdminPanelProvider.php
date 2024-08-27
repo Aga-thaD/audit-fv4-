@@ -55,6 +55,7 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->brandLogo(asset('images/ts-logo.png'))
             ->brandLogoHeight('3rem')
-            ->topNavigation();
+            ->topNavigation()
+            ->registration();
     }
 }
