@@ -24,6 +24,7 @@ class PhoneQC extends Model
         'pqc_call_recording',
         'pqc_scorecard',
         'pqc_score',
+        'pqc_status',
     ];
 
     protected $casts = [
