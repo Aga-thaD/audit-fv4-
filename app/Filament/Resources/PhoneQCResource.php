@@ -79,7 +79,10 @@ class PhoneQCResource extends Resource
                     ])->columnSpan(1),
                 Forms\Components\Section::make('Scorecard')
                     ->schema([
+                        Forms\Components\Repeater::make('pqc_scorecard')
+                            ->schema([
 
+                            ])
                     ]),
             ])->columns(2);
     }
