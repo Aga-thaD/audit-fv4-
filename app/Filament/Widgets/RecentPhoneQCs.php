@@ -9,13 +9,14 @@ use Filament\Widgets\TableWidget as BaseWidget;
 
 class RecentPhoneQCs extends BaseWidget
 {
-    protected int | string | array $columnSpan = 'full';
+    protected static ?string $heading = 'Recent Phone QCs';
 
     protected static ?int $sort = 4;
 
     public function table(Table $table): Table
     {
         return $table
+            ->emptyStateHeading('No Phone QCs')
             ->query(
                 PhoneQC::query()->latest()->limit(5)
             )

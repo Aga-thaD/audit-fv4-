@@ -9,13 +9,12 @@ use Filament\Widgets\TableWidget as BaseWidget;
 
 class RecentAudits extends BaseWidget
 {
-    protected int | string | array $columnSpan = 'full';
-
     protected static ?int $sort = 4;
 
     public function table(Table $table): Table
     {
         return $table
+            ->emptyStateHeading('No Audits')
             ->query(
                 Audit::query()->latest()->limit(5)
             )
