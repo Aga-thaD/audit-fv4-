@@ -185,7 +185,7 @@ class PhoneQCResource extends Resource
                         ->label('Dispute')
                         ->icon('heroicon-o-exclamation-circle')
                         ->color('warning')
-                        ->action(function (Audit $record) {
+                        ->action(function (PhoneQC $record) {
                             $record->update(['aud_status' => 'Disputed']);
                         })
                         ->requiresConfirmation()
