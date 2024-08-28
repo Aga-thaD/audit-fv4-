@@ -189,7 +189,7 @@ class PhoneQCResource extends Resource
                             $record->update(['aud_status' => 'Disputed']);
                         })
                         ->requiresConfirmation()
-                        ->visible(fn (Audit $record) =>
+                        ->visible(fn (PhoneQC $record) =>
                             Auth::user()->user_role === 'Associate' &&
                             $record->aud_status === 'Pending'
                         ),
