@@ -142,6 +142,44 @@ class AuditResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\ActionGroup::make([
+                    Tables\Actions\Action::make('Dispute')
+                        ->label('Dispute')
+                        ->icon('heroicon-o-exclamation-circle')
+                        ->color('warning')
+                        ->action(function (Audit $record) {
+                            $record->update(['aud_status' => 'Disputed']);
+                        })
+                        ->requiresConfirmation()
+                        ->visible(fn (Audit $record) =>
+                            Auth::user()->user_role === 'Associate' &&
+                            $record->aud_status === 'Pending'
+                        ),
+                    Tables\Actions\Action::make('Acknowledge')
+                        ->label('Acknowledge')
+                        ->icon('heroicon-o-check-circle')
+                        ->color('success')
+                        ->action(function (Audit $record) {
+                            $record->update(['aud_status' => 'Acknowledged']);
+                        })
+                        ->requiresConfirmation()
+                        ->visible(fn (Audit $record) =>
+                            Auth::user()->user_role === 'Associate' &&
+                            $record->aud_status === 'Pending'
+                        ),
+                    Tables\Actions\Action::make('Mark as Pending')
+                        ->label('Mark as Pending')
+                        ->icon('heroicon-o-arrow-path')
+                        ->color('primary')
+                        ->action(function (Audit $record) {
+                            $record->update(['aud_status' => 'Pending']);
+                        })
+                        ->requiresConfirmation()
+                        ->visible(fn (Audit $record) =>
+                            Auth::user()->user_role === 'Associate' &&
+                            $record->aud_status === 'Disputed'
+                        ),
+                ])
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
