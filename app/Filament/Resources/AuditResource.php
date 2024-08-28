@@ -62,10 +62,12 @@ class AuditResource extends Resource
                                 Forms\Components\DatePicker::make('aud_date')
                                     ->label('Audit Date')
                                     ->default(fn () => Carbon::today()->toDateString())
-                                    ->format('m-d-Y')
-                                    ->displayFormat('m-d-Y')
+                                    ->format('Y-m-d')  // Changed format to Y-m-d
+                                    ->displayFormat('m/d/Y') // This is for display only
                                     ->readOnly(),
-                                Forms\Components\DatePicker::make('aud_date_processed')->label('Date Processed'),
+                                Forms\Components\DatePicker::make('aud_date_processed')->label('Date Processed')
+                                    ->format('Y-m-d')  // Changed format to Y-m-d
+                                    ->displayFormat('m/d/Y'),  // This is for display only
                                 Forms\Components\Select::make('aud_time_processed')->label('Time Processed')
                                     ->options([
                                         'Prime' => 'Prime',
