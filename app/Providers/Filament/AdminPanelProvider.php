@@ -54,6 +54,7 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
+            ->favicon(asset('images/ts-favicon.ico'))
             ->brandLogo(asset('images/ts-logo.png'))
             ->brandLogoHeight('3rem')
             ->topNavigation()
