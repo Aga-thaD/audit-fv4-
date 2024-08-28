@@ -6,6 +6,8 @@ use App\Models\Audit;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Widgets\TableWidget as BaseWidget;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Auth;
 
 class RecentAudits extends BaseWidget
 {
@@ -18,6 +20,12 @@ class RecentAudits extends BaseWidget
             ->query(
                 Audit::query()->latest()->limit(5)
             )
+            ->modifyQueryUsing(function (Builder $query) {
+                $user = Auth::user();
+                if ($user->user_role === 'Associate') {
+                    $query->where('user_id', $user->id);
+                }
+            })
             ->columns([
                 Tables\Columns\TextColumn::make('aud_case_number')
                     ->label('Case/WO #')
