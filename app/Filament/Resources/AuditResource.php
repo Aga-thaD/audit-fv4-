@@ -37,6 +37,7 @@ class AuditResource extends Resource
                         Forms\Components\Grid::make()
                             ->schema([
                                 Forms\Components\Select::make('lob')
+                                    ->required()
                                     ->label('LOB')
                                     ->options([
                                         'CALL ENTERING' => 'CALL ENTERING',
@@ -51,6 +52,7 @@ class AuditResource extends Resource
                                     })
                                     ->required(),
                                 Forms\Components\Select::make('user_id')->label('Name')
+                                    ->required()
                                     ->options(function (callable $get) {
                                         $lob = $get('lob');
                                         if (!$lob) {
@@ -62,33 +64,41 @@ class AuditResource extends Resource
                                     ->searchable()
                                     ->preload(),
                                 Forms\Components\TextInput::make('aud_auditor')
+                                    ->required()
                                     ->label('Auditor')
                                     ->default(fn () => Auth::user()->name)
                                     ->readOnly(),
                                 Forms\Components\DatePicker::make('aud_date')
+                                    ->required()
                                     ->label('Audit Date')
                                     ->default(fn () => Carbon::today()->toDateString())
                                     ->format('Y-m-d')  // Changed format to Y-m-d
                                     ->displayFormat('m/d/Y') // This is for display only
                                     ->readOnly(),
                                 Forms\Components\DatePicker::make('aud_date_processed')->label('Date Processed')
+                                    ->required()
                                     ->format('Y-m-d')  // Changed format to Y-m-d
                                     ->displayFormat('m/d/Y'),  // This is for display only
                                 Forms\Components\Select::make('aud_time_processed')->label('Time Processed')
+                                    ->required()
                                     ->options([
                                         'Prime' => 'Prime',
                                         'Afterhours' => 'Afterhours',
                                     ])
                                     ->native(false),
-                                Forms\Components\TextInput::make('aud_case_number')->label('Case/WO #'),
+                                Forms\Components\TextInput::make('aud_case_number')->label('Case/WO #')
+                                    ->required(),
                                 Forms\Components\Select::make('aud_audit_type')->label('Type of Audit')
+                                    ->required()
                                     ->options([
                                         'Internal' => 'Internal',
                                         'Client' => 'Client',
                                     ])
                                     ->native(false),
-                                Forms\Components\TextInput::make('aud_customer')->label('Customer'),
+                                Forms\Components\TextInput::make('aud_customer')->label('Customer')
+                                    ->required(),
                                 Forms\Components\Select::make('aud_area_hit')->label('Area Hit')
+                                    ->required()
                                     ->options([
                                         'Work Order Level' => 'Work Order Level',
                                         'Case Level' => 'Case Level',
@@ -122,7 +132,8 @@ class AuditResource extends Resource
                                     ->searchable()
                                     ->required(),
                             ]),
-                        Forms\Components\RichEditor::make('aud_feedback')->label('Feedback'),
+                        Forms\Components\RichEditor::make('aud_feedback')->label('Feedback')
+                            ->required(),
                         Forms\Components\FileUpload::make('aud_screenshot')->label('Screenshot'),
                         Forms\Components\Hidden::make('aud_status')
                             ->default('Pending'),
