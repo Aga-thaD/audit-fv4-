@@ -147,8 +147,18 @@ class AuditResource extends Resource
                         ->label('Dispute')
                         ->icon('heroicon-o-exclamation-circle')
                         ->color('warning')
-                        ->action(function (Audit $record) {
-                            $record->update(['aud_status' => 'Disputed']);
+                        ->form([
+                            Forms\Components\Textarea::make('aud_associate_feedback')->label('Reason for Dispute')
+                                ->required()
+                                ->maxLength(255),
+                            Forms\Components\FileUpload::make('aud_associate_screenshot')->label('Screenshot'),
+                        ])
+                        ->action(function (Audit $record, array $data) {
+                            $record->update([
+                                'aud_status' => 'Disputed',
+                                'aud_associate_feedback' => $data['aud_associate_feedback'],
+                                'aud_associate_screenshot' => $data['aud_associate_screenshot']
+                            ]);
                         })
                         ->requiresConfirmation()
                         ->visible(fn (Audit $record) =>
