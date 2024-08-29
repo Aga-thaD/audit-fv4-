@@ -30,6 +30,7 @@ return new class extends Migration
             $table->string('aud_status')->nullable();
             $table->longText('aud_associate_feedback')->nullable();
             $table->string('aud_associate_screenshot')->nullable();
+            $table->timestamp('aud_dispute_timestamp')->nullable();
             $table->timestamps();
         });
     }

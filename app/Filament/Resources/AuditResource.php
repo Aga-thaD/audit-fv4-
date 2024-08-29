@@ -176,7 +176,8 @@ class AuditResource extends Resource
                             $record->update([
                                 'aud_status' => 'Disputed',
                                 'aud_associate_feedback' => $data['aud_associate_feedback'],
-                                'aud_associate_screenshot' => $data['aud_associate_screenshot']
+                                'aud_associate_screenshot' => $data['aud_associate_screenshot'],
+                                'aud_dispute_timestamp' => now(), // Add this line to set the dispute timestamp
                             ]);
                         })
                         ->requiresConfirmation()
@@ -273,6 +274,8 @@ class AuditResource extends Resource
                             ->schema([
                                 TextEntry::make('aud_associate_feedback')->label('Reason for Dispute'),
                                 ImageEntry::make('aud_associate_screenshot')->label('Screenshot'),
+                                TextEntry::make('aud_dispute_timestamp')->label('Dispute Filed On')
+                                    ->dateTime('m/d/Y H:i:s'), // Add this line to display the dispute timestamp
                             ])->visible(fn ($record) => $record->aud_status === 'Disputed'),
                     ])->columnSpanFull(),
             ]);
