@@ -9,6 +9,12 @@ use App\Models\User;
 use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Grid;
+use Filament\Infolists\Components\ImageEntry;
+use Filament\Infolists\Components\Section;
+use Filament\Infolists\Components\Tabs;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -220,6 +226,45 @@ class AuditResource extends Resource
             'create' => Pages\CreateAudit::route('/create'),
             'edit' => Pages\EditAudit::route('/{record}/edit'),
         ];
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Tabs::make()
+                    ->schema([
+                        Tabs\Tab::make('Audit Details')
+                            ->schema([
+                                Section::make()
+                                    ->schema([
+                                        Grid::make()
+                                            ->schema([
+                                                TextEntry::make('lob')->label('LOB'),
+                                                TextEntry::make('user.name')->label('Name'),
+                                                TextEntry::make('aud_auditor')->label('Auditor'),
+                                                TextEntry::make('aud_date')->label('Audit Date')->date('m/d/Y'),
+                                                TextEntry::make('aud_date_processed')->label('Date Processed')->date('m/d/Y'),
+                                                TextEntry::make('aud_time_processed')->label('Time Processed'),
+                                                TextEntry::make('aud_case_number')->label('Case/WO #'),
+                                                TextEntry::make('aud_audit_type')->label('Type of Audit'),
+                                                TextEntry::make('aud_customer')->label('Customer'),
+                                                TextEntry::make('aud_area_hit')->label('Area Hit'),
+                                                TextEntry::make('aud_error_category')->label('Error Category'),
+                                                TextEntry::make('aud_type_of_error')->label('Error Type'),
+                                            ]),
+                                        TextEntry::make('aud_feedback')->label('Feedback')->html(),
+                                        ImageEntry::make('aud_screenshot')->label('Screenshot'),
+                                        TextEntry::make('aud_status')->label('Status'),
+                                    ]),
+                            ]),
+                        Tabs\Tab::make('Dispute Remarks')
+                            ->schema([
+                                TextEntry::make('aud_associate_feedback')->label('Reason for Dispute'),
+                                ImageEntry::make('aud_associate_screenshot')->label('Screenshot'),
+                            ])->visible(fn ($record) => $record->aud_status === 'Disputed'),
+                    ])->columnSpanFull(),
+            ]);
     }
 
     protected static function getErrorTypes(): array
