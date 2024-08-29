@@ -28,6 +28,8 @@ return new class extends Migration
             $table->longText('aud_feedback')->nullable();
             $table->string('aud_screenshot')->nullable();
             $table->string('aud_status')->nullable();
+            $table->longText('aud_associate_feedback')->nullable();
+            $table->string('aud_associate_screenshot')->nullable();
             $table->timestamps();
         });
     }

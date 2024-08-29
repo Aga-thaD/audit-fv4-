@@ -25,6 +25,8 @@ class Audit extends Model
         'aud_feedback',
         'aud_screenshot',
         'aud_status',
+        'aud_associate_feedback',
+        'aud_associate_screenshot',
 
     ];
 
