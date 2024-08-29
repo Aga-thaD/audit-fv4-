@@ -176,7 +176,7 @@ class AuditResource extends Resource
                         })
                         ->requiresConfirmation()
                         ->visible(fn (Audit $record) =>
-                            Auth::user()->user_role === 'Associate' &&
+                            in_array(Auth::user()->user_role, ['Auditor', 'Admin']) &&
                             $record->aud_status === 'Disputed'
                         ),
                 ])
