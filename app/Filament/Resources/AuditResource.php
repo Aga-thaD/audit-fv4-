@@ -141,8 +141,10 @@ class AuditResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make()
+                        ->visible(fn () => in_array(Auth::user()->user_role, ['Auditor', 'Admin'])),
                     Tables\Actions\Action::make('Dispute')
                         ->label('Dispute')
                         ->icon('heroicon-o-exclamation-circle')
