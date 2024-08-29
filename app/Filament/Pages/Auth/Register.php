@@ -3,9 +3,12 @@
 namespace App\Filament\Pages\Auth;
 
 use App\Models\User;
+use App\Rules\TeamSpanEmailRule;
+use Filament\Forms\Components\Component;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
 use Filament\Http\Responses\Auth\RegistrationResponse;
 use Filament\Pages\Page;
 use Filament\Pages\Auth\Register as BaseRegister;
@@ -29,6 +32,16 @@ class Register extends BaseRegister
                     ->statePath('data'),
             ),
         ];
+    }
+
+    protected function getEmailFormComponent(): Component
+    {
+        return TextInput::make('email')
+            ->label('Email address')
+            ->email()
+            ->required()
+            ->unique(User::class)
+            ->rules([new TeamSpanEmailRule()]);
     }
 
     protected function getRoleFormComponent()
