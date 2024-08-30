@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PhoneQCResource\Pages;
 use App\Filament\Resources\PhoneQCResource\RelationManagers;
+use App\Models\Audit;
 use App\Models\PhoneQC;
 use App\Models\User;
 use Carbon\Carbon;
@@ -181,17 +182,30 @@ class PhoneQCResource extends Resource
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\ActionGroup::make([
+                    Tables\Actions\EditAction::make()
+                        ->visible(fn () => in_array(Auth::user()->user_role, ['Admin', 'Manager', 'Auditor'])),
                     Tables\Actions\Action::make('Dispute')
                         ->label('Dispute')
                         ->icon('heroicon-o-exclamation-circle')
                         ->color('warning')
-                        ->action(function (PhoneQC $record) {
-                            $record->update(['aud_status' => 'Disputed']);
+                        ->form([
+                            Forms\Components\Textarea::make('pqc_associate_feedback')->label('Reason for Dispute')
+                                ->required()
+                                ->maxLength(255),
+                            Forms\Components\FileUpload::make('pqc_associate_screenshot')->label('Screenshot'),
+                        ])
+                        ->action(function (PhoneQC $record, array $data) {
+                            $record->update([
+                                'pqc_status' => 'Disputed',
+                                'pqc_associate_feedback' => $data['pqc_associate_feedback'],
+                                'pqc_associate_screenshot' => $data['pqc_associate_screenshot'],
+                                'pqc_dispute_timestamp' => now(), // Add this line to set the dispute timestamp
+                            ]);
                         })
                         ->requiresConfirmation()
                         ->visible(fn (PhoneQC $record) =>
                             Auth::user()->user_role === 'Associate' &&
-                            $record->aud_status === 'Pending'
+                            $record->pqc_status === 'Pending'
                         ),
                     Tables\Actions\Action::make('Acknowledge')
                         ->label('Acknowledge')
@@ -214,7 +228,7 @@ class PhoneQCResource extends Resource
                         })
                         ->requiresConfirmation()
                         ->visible(fn (PhoneQC $record) =>
-                            Auth::user()->user_role === 'Associate' &&
+                            in_array(Auth::user()->user_role, ['Admin', 'Manager', 'Auditor']) &&
                             $record->pqc_status === 'Disputed'
                         ),
                 ])
