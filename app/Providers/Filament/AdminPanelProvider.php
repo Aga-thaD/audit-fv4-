@@ -59,6 +59,7 @@ class AdminPanelProvider extends PanelProvider
             ->brandLogoHeight('3rem')
             ->topNavigation()
             ->registration(Register::class)
-            ->passwordReset();
+            ->passwordReset()
+            ->databaseNotifications();
     }
 }

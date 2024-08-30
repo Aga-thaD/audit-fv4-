@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Exports\AuditExporter;
 use App\Filament\Resources\AuditResource\Pages;
 use App\Filament\Resources\AuditResource\RelationManagers;
 use App\Models\Audit;
@@ -144,6 +145,10 @@ class AuditResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->headerActions([
+                Tables\Actions\ExportAction::make()
+                    ->exporter(AuditExporter::class)
+            ])
             ->columns([
                 Tables\Columns\TextColumn::make('aud_case_number')->label('Case/WO #'),
                 Tables\Columns\TextColumn::make('aud_error_category')->label('Error Category'),
