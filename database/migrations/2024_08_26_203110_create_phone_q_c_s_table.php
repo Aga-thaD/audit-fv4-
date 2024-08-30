@@ -28,6 +28,9 @@ return new class extends Migration
             $table->json('pqc_scorecard')->nullable();
             $table->string('pqc_score')->nullable();
             $table->string('pqc_status')->nullable();
+            $table->longText('pqc_associate_screenshot')->nullable();
+            $table->string('pqc_associate_screenshot')->nullable();
+            $table->timestamp('pqc_dispute_timestamp')->nullable();
             $table->timestamps();
         });
     }

@@ -25,6 +25,9 @@ class PhoneQC extends Model
         'pqc_scorecard',
         'pqc_score',
         'pqc_status',
+        'pqc_associate_screenshot',
+        'pqc_associate_screenshot',
+        'pqc_dispute_timestamp',
     ];
 
     protected $casts = [
