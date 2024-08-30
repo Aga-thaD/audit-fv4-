@@ -146,7 +146,7 @@ class AuditResource extends Resource
     {
         return $table
             ->headerActions([
-                Tables\Actions\ExportAction::make()
+                Tables\Actions\ExportAction::make()->label('Export Audits')
                     ->exporter(AuditExporter::class)
             ])
             ->columns([
