@@ -30,12 +30,20 @@ class UserResource extends Resource
                         Forms\Components\TextInput::make('email'),
                         Forms\Components\TextInput::make('password'),
                         Forms\Components\Select::make('user_role')->label('Role')
-                            ->options([
-                                'Admin' => 'Admin',
-                                'Manager' => 'Manager',
-                                'Auditor' => 'Auditor',
-                                'Associate' => 'Associate',
-                            ])
+                            ->options(function () {
+                                $options = [
+                                    'Manager' => 'Manager',
+                                    'Auditor' => 'Auditor',
+                                    'Associate' => 'Associate',
+                                ];
+
+                                // Only add 'Admin' option if the current user is an Admin
+                                if (Auth::user()->user_role === 'Admin') {
+                                    $options = ['Admin' => 'Admin'] + $options;
+                                }
+
+                                return $options;
+                            })
                             ->live()
                             ->afterStateUpdated(function ($state, callable $set) {
                                 if ($state === 'Admin') {
