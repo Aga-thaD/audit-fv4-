@@ -10,6 +10,11 @@ use App\Models\User;
 use Carbon\Carbon;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\ImageEntry;
+use Filament\Infolists\Components\RepeatableEntry;
+use Filament\Infolists\Components\Tabs;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
@@ -244,6 +249,44 @@ class PhoneQCResource extends Resource
                     $query->where('user_id', $user->id);
                 }
             });
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                Tabs::make()
+                    ->schema([
+                        Tabs\Tab::make('Details')
+                            ->schema([
+                                TextEntry::make('pqc_lob')->label('LOB'),
+                                TextEntry::make('user.name')->label('Name'),
+                                TextEntry::make('pqc_auditor')->label('Auditor'),
+                                TextEntry::make('pqc_audit_date')->label('Audit Date'),
+                                TextEntry::make('pqc_date_processed')->label('Date Processed'),
+                                TextEntry::make('pqc_time_processed')->label('Time Processed'),
+                                TextEntry::make('pqc_type_of_call')->label('Type of Call'),
+
+                            ]),
+                        Tabs\Tab::make('Remarks')
+                            ->schema([
+                                TextEntry::make('pqc_call_summary')->label('Call Summary'),
+                                TextEntry::make('pqc_strengths')->label('Strength/s'),
+                                TextEntry::make('pqc_opportunities')->label('Opportunities'),
+                                ImageEntry::make('pqc_call_recording')->label('Call Recording'),
+                            ]),
+                        Tabs\Tab::make('Scorecard')
+                            ->schema([
+                                TextEntry::make('pqc_score')->label('Score'),
+                                RepeatableEntry::make('pqc_scorecard')->label('')
+                                    ->schema([
+                                        TextEntry::make('category'),
+                                        TextEntry::make('sub_category')->label('Sub-Category'),
+                                        TextEntry::make('pqc_weightage')->label('Weightage'),
+                                    ])
+                            ])
+                    ])->columnSpanFull()
+            ]);
     }
 
     public static function getRelations(): array
