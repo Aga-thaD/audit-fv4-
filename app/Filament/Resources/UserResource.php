@@ -36,7 +36,7 @@ class UserResource extends Resource
                             ])
                             ->live()
                             ->afterStateUpdated(function ($state, callable $set) {
-                                if ($state === 'Admin' || $state === 'Auditor') {
+                                if ($state === 'Admin') {
                                     $set('audit_create', true);
                                     $set('audit_view', true);
                                     $set('audit_update', true);
@@ -49,6 +49,19 @@ class UserResource extends Resource
                                     $set('user_view', true);
                                     $set('user_update', true);
                                     $set('user_delete', true);
+                                } elseif ($state === 'Auditor') {
+                                    $set('audit_create', true);
+                                    $set('audit_view', true);
+                                    $set('audit_update', true);
+                                    $set('audit_delete', true);
+                                    $set('pqc_create', true);
+                                    $set('pqc_view', true);
+                                    $set('pqc_update', true);
+                                    $set('pqc_delete', true);
+                                    $set('user_create', false);
+                                    $set('user_view', false);
+                                    $set('user_update', false);
+                                    $set('user_delete', false);
                                 } elseif ($state === 'Associate') {
                                     $set('audit_create', false);
                                     $set('audit_view', true);
