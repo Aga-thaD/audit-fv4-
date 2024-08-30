@@ -166,7 +166,7 @@ class AuditResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\EditAction::make()
-                        ->visible(fn () => in_array(Auth::user()->user_role, ['Auditor', 'Admin'])),
+                        ->visible(fn () => in_array(Auth::user()->user_role, ['Admin', 'Manager', 'Auditor'])),
                     Tables\Actions\Action::make('Dispute')
                         ->label('Dispute')
                         ->icon('heroicon-o-exclamation-circle')
@@ -211,7 +211,7 @@ class AuditResource extends Resource
                         })
                         ->requiresConfirmation()
                         ->visible(fn (Audit $record) =>
-                            in_array(Auth::user()->user_role, ['Auditor', 'Admin']) &&
+                            in_array(Auth::user()->user_role, ['Admin', 'Manager', 'Auditor']) &&
                             $record->aud_status === 'Disputed'
                         ),
                 ])

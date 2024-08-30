@@ -31,12 +31,26 @@ class UserResource extends Resource
                         Forms\Components\Select::make('user_role')->label('Role')
                             ->options([
                                 'Admin' => 'Admin',
+                                'Manager' => 'Manager',
                                 'Auditor' => 'Auditor',
                                 'Associate' => 'Associate',
                             ])
                             ->live()
                             ->afterStateUpdated(function ($state, callable $set) {
                                 if ($state === 'Admin') {
+                                    $set('audit_create', true);
+                                    $set('audit_view', true);
+                                    $set('audit_update', true);
+                                    $set('audit_delete', true);
+                                    $set('pqc_create', true);
+                                    $set('pqc_view', true);
+                                    $set('pqc_update', true);
+                                    $set('pqc_delete', true);
+                                    $set('user_create', true);
+                                    $set('user_view', true);
+                                    $set('user_update', true);
+                                    $set('user_delete', true);
+                                } elseif ($state === 'Manager') {
                                     $set('audit_create', true);
                                     $set('audit_view', true);
                                     $set('audit_update', true);
