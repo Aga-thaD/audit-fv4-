@@ -175,7 +175,8 @@ class AuditResource extends Resource
                             Forms\Components\Textarea::make('aud_associate_feedback')->label('Reason for Dispute')
                                 ->required()
                                 ->maxLength(255),
-                            Forms\Components\FileUpload::make('aud_associate_screenshot')->label('Screenshot'),
+                            Forms\Components\FileUpload::make('aud_associate_screenshot')->label('Screenshot')
+                                ->maxFiles(3),
                         ])
                         ->action(function (Audit $record, array $data) {
                             $record->update([

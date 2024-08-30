@@ -197,7 +197,8 @@ class PhoneQCResource extends Resource
                             Forms\Components\Textarea::make('pqc_associate_feedback')->label('Reason for Dispute')
                                 ->required()
                                 ->maxLength(255),
-                            Forms\Components\FileUpload::make('pqc_associate_screenshot')->label('Screenshot'),
+                            Forms\Components\FileUpload::make('pqc_associate_screenshot')->label('Screenshot')
+                                ->maxFiles(3),
                         ])
                         ->action(function (PhoneQC $record, array $data) {
                             $record->update([
