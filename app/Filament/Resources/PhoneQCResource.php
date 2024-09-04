@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Exports\PhoneQCExporter;
 use App\Filament\Resources\PhoneQCResource\Pages;
 use App\Filament\Resources\PhoneQCResource\RelationManagers;
 use App\Models\Audit;
@@ -174,6 +175,10 @@ class PhoneQCResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->headerActions([
+                Tables\Actions\ExportAction::make()->label('Export Phone QCs')
+                    ->exporter(PhoneQCExporter::class)
+            ])
             ->columns([
                 Tables\Columns\TextColumn::make('pqc_lob')->label('LOB'),
                 Tables\Columns\TextColumn::make('user.name')->label('Name'),
