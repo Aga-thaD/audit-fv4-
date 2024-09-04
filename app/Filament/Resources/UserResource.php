@@ -28,7 +28,10 @@ class UserResource extends Resource
                     ->schema([
                         Forms\Components\TextInput::make('name'),
                         Forms\Components\TextInput::make('email'),
-                        Forms\Components\TextInput::make('password'),
+                        Forms\Components\TextInput::make('password')
+                            ->password()
+                            ->dehydrated(fn ($state) => filled($state))
+                            ->dehydrateStateUsing(fn ($state) => Hash::make($state)),
                         Forms\Components\Select::make('user_role')->label('Role')
                             ->options(function () {
                                 $options = [
@@ -106,7 +109,8 @@ class UserResource extends Resource
                                 'CALL ENTERING' => 'CALL ENTERING',
                                 'ERG FOLLOW-UP' => 'ERG FOLLOW-UP',
                                 'DOCUMENT PROCESSING' => 'DOCUMENT PROCESSING',
-                            ]),
+                            ])
+                            ->multiple(),
                     ]),
                 Forms\Components\Section::make('Permissions')
                     ->schema([

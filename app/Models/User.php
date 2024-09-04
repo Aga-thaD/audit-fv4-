@@ -38,6 +38,10 @@ class User extends Authenticatable
         'user_delete',
     ];
 
+    protected $casts = [
+        'user_lob' => 'array'
+    ];
+
     /**
      * The attributes that should be hidden for serialization.
      *

@@ -45,12 +45,16 @@ class PhoneQCResource extends Resource
                             ])
                             ->reactive(),
                         Forms\Components\Select::make('user_id')->label('Name')
+                            ->required()
                             ->options(function (callable $get) {
-                                $lob = $get('pqc_lob');
+                                $lob = $get('lob');
                                 if (!$lob) {
                                     return User::all()->pluck('name', 'id');
                                 }
-                                return User::where('user_lob', $lob)->pluck('name', 'id');
+                                return User::where(function ($query) use ($lob) {
+                                    $query->whereJsonContains('user_lob', $lob)
+                                        ->orWhere('user_lob', 'like', '%' . $lob . '%');
+                                })->pluck('name', 'id');
                             })
                             ->reactive()
                             ->searchable()
