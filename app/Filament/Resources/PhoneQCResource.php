@@ -116,8 +116,7 @@ class PhoneQCResource extends Resource
                                                 ];
                                             case 'Customer Experience':
                                                 return [
-                                                    'Active Listening / Comprehension / Communication' => 'Active Listening / Comprehension / Communication',
-                                                    'Empathy' => 'Empathy',
+                                                    'Active Listening / Comprehension / Communication / Empathy' => 'Active Listening / Comprehension / Communication / Empathy',
                                                     'Professionalism' => 'Professionalism',
                                                 ];
                                             case 'Procedural Adherence':
@@ -137,8 +136,7 @@ class PhoneQCResource extends Resource
                                             'Branding' => 3,
                                             'Compliance - Recorded Line' => 5,
                                             'Thank you and Goodbye' => 2,
-                                            'Active Listening / Comprehension / Communication' => 10,
-                                            'Empathy' => 10,
+                                            'Active Listening / Comprehension / Communication / Empathy' => 10,
                                             'Professionalism' => 20,
                                             'Proper Probing' => 20,
                                             'Process Mastery' => 20,
