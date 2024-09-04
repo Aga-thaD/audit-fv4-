@@ -285,7 +285,14 @@ class PhoneQCResource extends Resource
                                         TextEntry::make('sub_category')->label('Sub-Category'),
                                         TextEntry::make('pqc_weightage')->label('Weightage'),
                                     ])
-                            ])
+                            ]),
+                        Tabs\Tab::make('Dispute Remarks')
+                            ->schema([
+                                TextEntry::make('pqc_associate_feedback')->label('Reason for Dispute'),
+                                ImageEntry::make('pqc_associate_screenshot')->label('Screenshot'),
+                                TextEntry::make('pqc_dispute_timestamp')->label('Dispute Filed On')
+                                    ->dateTime('m/d/Y H:i:s'), // Add this line to display the dispute timestamp
+                            ])->visible(fn ($record) => $record->pqc_status === 'Disputed'),
                     ])->columnSpanFull()
             ]);
     }
