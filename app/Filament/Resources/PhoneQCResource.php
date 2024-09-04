@@ -180,7 +180,13 @@ class PhoneQCResource extends Resource
                 Tables\Columns\TextColumn::make('pqc_auditor')->label('Auditor'),
                 Tables\Columns\TextColumn::make('pqc_audit_date')->label('Audit Date'),
                 Tables\Columns\TextColumn::make('pqc_score')->label('Score'),
-                Tables\Columns\TextColumn::make('pqc_status')->label('Status'),
+                Tables\Columns\TextColumn::make('pqc_status')->label('Status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'Pending' => 'warning',
+                        'Disputed' => 'danger',
+                        'Acknowledged' => 'success',
+                    }),
             ])
             ->filters([
                 //

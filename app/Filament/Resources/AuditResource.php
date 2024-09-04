@@ -157,7 +157,13 @@ class AuditResource extends Resource
                 Tables\Columns\TextColumn::make('aud_auditor')->label('Auditor'),
                 Tables\Columns\TextColumn::make('aud_customer')->label('Customer'),
                 Tables\Columns\TextColumn::make('aud_date')->label('Audit Date'),
-                Tables\Columns\TextColumn::make('aud_status')->label('Status'),
+                Tables\Columns\TextColumn::make('aud_status')->label('Status')
+                    ->badge()
+                    ->color(fn (string $state): string => match ($state) {
+                        'Pending' => 'warning',
+                        'Disputed' => 'danger',
+                        'Acknowledged' => 'success',
+                    }),
             ])
             ->filters([
                 //
