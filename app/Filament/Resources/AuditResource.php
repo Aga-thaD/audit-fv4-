@@ -389,7 +389,7 @@ class AuditResource extends Resource
                 'MAJOR' => [
                     'Incorrect document attached' => 'Incorrect document attached',
                     'Missed to upload PPW' => 'Missed to upload PPW',
-                    'Documents not combined' => 'Documents not combined',
+                    'Documents not split' => 'Documents not split',
                     'Reason code' => 'Reason code',
                 ],
                 'MINOR' => [
