@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('aud_customer')->nullable();
             $table->string('aud_area_hit')->nullable();
             $table->string('aud_error_category')->nullable();
-            $table->string('aud_nature_of_error')->nullable();
+            $table->string('aud_type_of_error')->nullable();
             $table->string('aud_source_type')->nullable();
             $table->longText('aud_feedback')->nullable();
             $table->string('aud_screenshot')->nullable();
