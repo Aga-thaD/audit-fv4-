@@ -118,23 +118,40 @@ class AuditResource extends Resource
                                         'CRITICAL' => 'CRITICAL',
                                         'MAJOR' => 'MAJOR',
                                         'MINOR' => 'MINOR',
+                                        'NOT APPLICABLE' => 'NOT APPLICABLE',
                                     ])
                                     ->reactive()
-                                    ->afterStateUpdated(fn (callable $set) => $set('aud_error_type', null))
+                                    ->afterStateUpdated(function (callable $set, callable $get) {
+                                        $set('aud_type_of_error', null);
+
+                                        // Clear the error type if it's not in the new category's options
+                                        $lob = $get('lob');
+                                        $category = $get('aud_error_category');
+                                        $currentErrorType = $get('aud_type_of_error');
+
+                                        if ($lob && $category && $category !== 'NOT APPLICABLE') {
+                                            $validOptions = self::getErrorTypes()[$lob][$category] ?? [];
+                                            if (!in_array($currentErrorType, array_keys($validOptions))) {
+                                                $set('aud_type_of_error', null);
+                                            }
+                                        }
+                                    })
                                     ->required(),
                                 Forms\Components\Select::make('aud_type_of_error')
                                     ->label('Error Type')
                                     ->options(function (callable $get) {
                                         $lob = $get('lob');
                                         $category = $get('aud_error_category');
-                                        if (!$lob || !$category) {
+                                        if (!$lob || !$category || $category === 'NOT APPLICABLE') {
                                             return [];
                                         }
                                         return self::getErrorTypes()[$lob][$category] ?? [];
                                     })
                                     ->reactive()
                                     ->searchable()
-                                    ->required(),
+                                    ->required()
+                                    ->disabled(fn (callable $get) => $get('aud_error_category') === 'NOT APPLICABLE')
+                                    ->dehydrated(fn (callable $get) => $get('aud_error_category') !== 'NOT APPLICABLE'),
                             ]),
                         Forms\Components\RichEditor::make('aud_feedback')->label('Feedback')
                             ->required(),
