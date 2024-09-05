@@ -106,6 +106,10 @@ class PhoneQCResource extends Resource
                                         'Procedural Adherence' => 'Procedural Adherence',
                                     ])
                                     ->reactive()
+                                    ->afterStateUpdated(function (callable $set) {
+                                        $set('sub_category', null);
+                                        $set('pqc_weightage', null);
+                                    })
                                     ->native(false),
                                 Forms\Components\Select::make('sub_category')->label('Sub-Category')
                                     ->options(function (callable $get) {
