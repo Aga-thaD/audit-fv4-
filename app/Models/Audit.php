@@ -22,6 +22,7 @@ class Audit extends Model
         'aud_area_hit',
         'aud_error_category',
         'aud_nature_of_error',
+        'aud_source_type',
         'aud_feedback',
         'aud_screenshot',
         'aud_status',

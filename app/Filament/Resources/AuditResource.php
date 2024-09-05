@@ -153,6 +153,18 @@ class AuditResource extends Resource
                                     ->disabled(fn (callable $get) => $get('aud_error_category') === 'NOT APPLICABLE')
                                     ->dehydrated(fn (callable $get) => $get('aud_error_category') !== 'NOT APPLICABLE'),
                             ]),
+                        Forms\Components\Select::make('aud_source_type')
+                            ->label('Source Type')
+                            ->options([
+                                'System Integration' => 'System Integration',
+                                'Manual' => 'Manual',
+                            ])
+                            ->required()
+                            ->visible(function (callable $get) {
+                                return $get('lob') === 'CALL ENTERING';
+                            })
+                            ->reactive()
+                            ->native(false),
                         Forms\Components\RichEditor::make('aud_feedback')->label('Feedback')
                             ->required(),
                         Forms\Components\FileUpload::make('aud_screenshot')->label('Screenshot'),
