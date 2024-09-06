@@ -266,7 +266,11 @@ class PhoneQCResource extends Resource
                 $user = Auth::user();
                 if ($user->user_role === 'Associate') {
                     $query->where('user_id', $user->id);
+                } elseif ($user->user_role !== 'Admin') {
+                    // For non-Admin users, filter phone QCs based on their LOBs
+                    $query->whereIn('pqc_lob', $user->user_lob);
                 }
+                // Admin users can see all phone QCs, so no additional filtering is needed for them
             });
     }
 
