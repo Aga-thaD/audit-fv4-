@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::create('audits', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('team_id')->constrained();
             $table->foreignId('user_id')->constrained();
             $table->string('lob')->nullable();
             $table->string('aud_auditor')->nullable();
