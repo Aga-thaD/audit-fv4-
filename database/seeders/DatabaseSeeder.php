@@ -72,7 +72,7 @@ class DatabaseSeeder extends Seeder
                 'email' => 'jane.doe@teamspan.com',
                 'password' => Hash::make('password'),
                 'user_role' => 'Associate',
-                'user_lob' => ['ERG FOLLOW-UP'],
+                'user_lob' => ['CUSTOMER SERVICE REP'],
                 'audit_create' => false, 'audit_view' => true, 'audit_update' => true, 'audit_delete' => false,
                 'pqc_create' => false, 'pqc_view' => true, 'pqc_update' => true, 'pqc_delete' => false,
                 'user_create' => false, 'user_view' => false, 'user_update' => false, 'user_delete' => false,

@@ -58,8 +58,8 @@ class AdminPanelProvider extends PanelProvider
                 Authenticate::class,
             ])
             ->tenant(Team::class, ownershipRelationship: 'team')
-            ->tenantRegistration(RegisterTeam::class)
-            ->tenantProfile(EditTeamProfile::class)
+            //->tenantRegistration(RegisterTeam::class)
+            //->tenantProfile(EditTeamProfile::class)
             ->favicon(asset('images/ts-favicon.ico'))
             ->brandLogo(asset('images/ts-logo.png'))
             ->brandLogoHeight('3rem')
