@@ -45,27 +45,30 @@ class AuditResource extends Resource
                                         $isSOSTeam = $user->teams->contains('slug', 'sos-team');
                                         $isTrueSourceTeam = $user->teams->contains('slug', 'truesource-team');
 
-                                        if ($isSOSTeam) {
-                                            return [
+                                        $options = [];
+
+                                        if ($user->user_role === 'Admin' || ($isSOSTeam && $isTrueSourceTeam)) {
+                                            $options = [
+                                                'CALL ENTERING' => 'CALL ENTERING',
+                                                'ERG FOLLOW-UP' => 'ERG FOLLOW-UP',
+                                                'DOCUMENT PROCESSING' => 'DOCUMENT PROCESSING',
+                                                'CUSTOMER SERVICE REP' => 'CUSTOMER SERVICE REP',
+                                                'ACCOUNTS RECEIVABLE/PAYABLE' => 'ACCOUNTS RECEIVABLE/PAYABLE',
+                                            ];
+                                        } elseif ($isSOSTeam) {
+                                            $options = [
                                                 'CUSTOMER SERVICE REP' => 'CUSTOMER SERVICE REP',
                                                 'ACCOUNTS RECEIVABLE/PAYABLE' => 'ACCOUNTS RECEIVABLE/PAYABLE',
                                             ];
                                         } elseif ($isTrueSourceTeam) {
-                                            return [
+                                            $options = [
                                                 'CALL ENTERING' => 'CALL ENTERING',
                                                 'ERG FOLLOW-UP' => 'ERG FOLLOW-UP',
                                                 'DOCUMENT PROCESSING' => 'DOCUMENT PROCESSING',
-                                            ];
-                                        } else {
-                                            // For users not in SOS or TrueSource teams, or for admins
-                                            return [
-                                                'CALL ENTERING' => 'CALL ENTERING',
-                                                'ERG FOLLOW-UP' => 'ERG FOLLOW-UP',
-                                                'DOCUMENT PROCESSING' => 'DOCUMENT PROCESSING',
-                                                'CUSTOMER SERVICE REP' => 'CUSTOMER SERVICE REP',
-                                                'ACCOUNTS RECEIVABLE/PAYABLE' => 'ACCOUNTS RECEIVABLE/PAYABLE',
                                             ];
                                         }
+
+                                        return $options;
                                     })
                                     ->reactive()
                                     ->afterStateUpdated(function (callable $set) {
