@@ -40,13 +40,33 @@ class AuditResource extends Resource
                                 Forms\Components\Select::make('lob')
                                     ->required()
                                     ->label('LOB')
-                                    ->options([
-                                        'CALL ENTERING' => 'CALL ENTERING',
-                                        'ERG FOLLOW-UP' => 'ERG FOLLOW-UP',
-                                        'DOCUMENT PROCESSING' => 'DOCUMENT PROCESSING',
-                                        'CUSTOMER SERVICE REP' => 'CUSTOMER SERVICE REP',
-                                        'ACCOUNTS RECEIVABLE/PAYABLE' => 'ACCOUNTS RECEIVABLE/PAYABLE',
-                                    ])
+                                    ->options(function () {
+                                        $user = Auth::user();
+                                        $isSOSTeam = $user->teams->contains('slug', 'sos-team');
+                                        $isTrueSourceTeam = $user->teams->contains('slug', 'truesource-team');
+
+                                        if ($isSOSTeam) {
+                                            return [
+                                                'CUSTOMER SERVICE REP' => 'CUSTOMER SERVICE REP',
+                                                'ACCOUNTS RECEIVABLE/PAYABLE' => 'ACCOUNTS RECEIVABLE/PAYABLE',
+                                            ];
+                                        } elseif ($isTrueSourceTeam) {
+                                            return [
+                                                'CALL ENTERING' => 'CALL ENTERING',
+                                                'ERG FOLLOW-UP' => 'ERG FOLLOW-UP',
+                                                'DOCUMENT PROCESSING' => 'DOCUMENT PROCESSING',
+                                            ];
+                                        } else {
+                                            // For users not in SOS or TrueSource teams, or for admins
+                                            return [
+                                                'CALL ENTERING' => 'CALL ENTERING',
+                                                'ERG FOLLOW-UP' => 'ERG FOLLOW-UP',
+                                                'DOCUMENT PROCESSING' => 'DOCUMENT PROCESSING',
+                                                'CUSTOMER SERVICE REP' => 'CUSTOMER SERVICE REP',
+                                                'ACCOUNTS RECEIVABLE/PAYABLE' => 'ACCOUNTS RECEIVABLE/PAYABLE',
+                                            ];
+                                        }
+                                    })
                                     ->reactive()
                                     ->afterStateUpdated(function (callable $set) {
                                         $set('user_id', null);
