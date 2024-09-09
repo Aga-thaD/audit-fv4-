@@ -7,10 +7,16 @@ use App\Models\PhoneQC;
 use App\Models\User;
 use Filament\Widgets\StatsOverviewWidget as BaseWidget;
 use Filament\Widgets\StatsOverviewWidget\Stat;
+use Illuminate\Support\Facades\Auth;
 
 class StatsOverview1stRow extends BaseWidget
 {
     protected static ?int $sort = 1;
+
+    public static function canView(): bool
+    {
+        return Auth::user()->user_role !== 'Associate';
+    }
     protected function getStats(): array
     {
         return [
