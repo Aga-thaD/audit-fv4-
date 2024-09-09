@@ -31,6 +31,19 @@ class PhoneQCResource extends Resource
 
     protected static ?string $modelLabel = 'Phone QC';
 
+    public static function canViewAny(): bool
+    {
+        $user = Auth::user();
+        $userTeams = $user->teams->pluck('slug')->toArray();
+
+        // Hide the resource if the user is only in the SOS team
+        if (in_array('sos-team', $userTeams) && !in_array('truesource-team', $userTeams)) {
+            return false;
+        }
+
+        return true;
+    }
+
     public static function form(Form $form): Form
     {
         return $form
