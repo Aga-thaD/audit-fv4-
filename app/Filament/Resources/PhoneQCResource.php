@@ -22,6 +22,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\HtmlString;
 
 class PhoneQCResource extends Resource
 {
@@ -309,7 +311,15 @@ class PhoneQCResource extends Resource
                                 TextEntry::make('pqc_call_summary')->label('Call Summary'),
                                 TextEntry::make('pqc_strengths')->label('Strength/s'),
                                 TextEntry::make('pqc_opportunities')->label('Opportunities'),
-                                ImageEntry::make('pqc_call_recording')->label('Call Recording'),
+                                TextEntry::make('pqc_call_recording')
+                                    ->label('Call Recording')
+                                    ->formatStateUsing(function ($state) {
+                                        if (!$state) {
+                                            return new HtmlString('No recording available');
+                                        }
+                                        $url = Storage::url($state);
+                                        return new HtmlString("<a href='{$url}' download style='color: blue'><u>Click to download recording</u></a>");
+                                    }),
                             ]),
                         Tabs\Tab::make('Scorecard')
                             ->schema([
