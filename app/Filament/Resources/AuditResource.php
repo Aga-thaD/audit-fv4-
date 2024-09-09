@@ -44,6 +44,8 @@ class AuditResource extends Resource
                                         'CALL ENTERING' => 'CALL ENTERING',
                                         'ERG FOLLOW-UP' => 'ERG FOLLOW-UP',
                                         'DOCUMENT PROCESSING' => 'DOCUMENT PROCESSING',
+                                        'CUSTOMER SERVICE REP' => 'CUSTOMER SERVICE REP',
+                                        'ACCOUNTS RECEIVABLE/PAYABLE' => 'ACCOUNTS RECEIVABLE/PAYABLE',
                                     ])
                                     ->reactive()
                                     ->afterStateUpdated(function (callable $set) {
@@ -411,6 +413,51 @@ class AuditResource extends Resource
                 'MINOR' => [
                     'Invalid transfer' => 'Invalid transfer',
                     'Incorrect document label' => 'Incorrect document label',
+                    'Duplicate attachment' => 'Duplicate attachment',
+                ],
+            ],
+            'CUSTOMER SERVICE REP' => [
+                'CRITICAL' => [
+                    'Incorrect location - dispatch' => 'Incorrect location - dispatch',
+                    'Rudeness' => 'Rudeness',
+                    'Back charge/Unapproved Work' => 'Back charge/Unapproved Work',
+                ],
+                'MAJOR' => [
+                    'Email not sent to AH support' => 'Email not sent to AH support',
+                    'Incorrect account status' => 'Incorrect account status',
+                    'Incorrect NTE' => 'Incorrect NTE',
+                    'Incorrect Trade - Dispatch' => 'Incorrect Trade - Dispatch',
+                    'PO not accepted – Portal (IVR)' => 'PO not accepted – Portal (IVR)',
+                    'Missed check in/out – (IVR)' => 'Missed check in/out – (IVR)',
+                    'Missing/incorrect Portal notes' => 'Missing/incorrect Portal notes',
+                    'Missed to email vendor' => 'Missed to email vendor',
+                    'Missed to email Account team' => 'Missed to email Account team',
+                    'Incomplete Follow up' => 'Incomplete Follow up',
+                    'Missed to upload documents' => 'Missed to upload documents',
+                    'Missed to follow special instructions' => 'Missed to follow special instructions',
+                ],
+                'MINOR' => [
+                    'Incomplete Portal details' => 'Incomplete Portal details',
+                    'Incorrect ETA date' => 'Incorrect ETA date',
+                    'Missing/Incorrect work order notes' => 'Missing/Incorrect work order notes',
+                    'Duplicate attachment' => 'Duplicate attachment',
+                ],
+            ],
+            'ACCOUNTS RECEIVABLE/PAYABLE' => [
+                'CRITICAL' => [
+                    'Incorrect Unit Price' => 'Incorrect Unit Price',
+                    'Rudeness' => 'Rudeness',
+                ],
+                'MAJOR' => [
+                    'Incorrect document attached' => 'Incorrect document attached',
+                    'Missed to upload paperwork' => 'Missed to upload paperwork',
+                    'Missing Email' => 'Missing Email',
+                    'Missed/Incorrect address' => 'Missed/Incorrect address',
+                    'Incorrect invoice number' => 'Incorrect invoice number',
+                    'Incorrect invoice date' => 'Incorrect invoice date',
+                    'Incorrect Type info' => 'Incorrect Type info',
+                ],
+                'MINOR' => [
                     'Duplicate attachment' => 'Duplicate attachment',
                 ],
             ],
