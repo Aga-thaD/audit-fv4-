@@ -22,6 +22,11 @@ class Team extends Model
         return $this->hasMany(Audit::class);
     }
 
+    public function phoneqcs(): HasMany
+    {
+        return $this->hasMany(PhoneQC::class);
+    }
+
     public function members(): BelongsToMany
     {
         return $this->belongsToMany(User::class);
