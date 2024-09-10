@@ -57,7 +57,7 @@ class AdminPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ])
-            ->tenant(Team::class, ownershipRelationship: 'team')
+            ->tenant(Team::class, ownershipRelationship: 'team', slugAttribute: 'slug')
             //->tenantRegistration(RegisterTeam::class)
             //->tenantProfile(EditTeamProfile::class)
             ->favicon(asset('images/ts-favicon.ico'))
