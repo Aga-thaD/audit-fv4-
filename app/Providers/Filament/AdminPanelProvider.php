@@ -2,6 +2,7 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Auth\EditProfile;
 use App\Filament\Pages\Auth\Register;
 use App\Filament\Pages\Tenancy\EditTeamProfile;
 use App\Filament\Pages\Tenancy\RegisterTeam;
@@ -66,6 +67,7 @@ class AdminPanelProvider extends PanelProvider
             ->topNavigation()
             ->registration(Register::class)
             ->passwordReset()
+            ->profile(EditProfile::class, isSimple: false)
             ->databaseNotifications();
     }
 }
