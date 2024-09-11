@@ -10,6 +10,7 @@ use App\Models\Team;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Filament\Navigation\NavigationItem;
 use Filament\Pages;
 use Filament\Panel;
 use Filament\PanelProvider;
@@ -57,6 +58,12 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+            ])
+            ->navigationItems([
+                NavigationItem::make('Profile Settings')
+                    ->icon('heroicon-o-cog-6-tooth')
+                    ->url(fn (): string => EditProfile::getUrl())
+                    ->sort(5),
             ])
             ->tenant(Team::class, ownershipRelationship: 'team', slugAttribute: 'slug')
             //->tenantRegistration(RegisterTeam::class)
