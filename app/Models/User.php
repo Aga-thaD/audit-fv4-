@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Filament\Models\Contracts\HasAvatar;
 use Filament\Models\Contracts\HasTenants;
 use Filament\Panel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,8 +12,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Storage;
 
-class User extends Authenticatable implements HasTenants
+class User extends Authenticatable implements HasTenants, HasAvatar
 {
     use HasFactory, Notifiable;
 
@@ -22,6 +24,7 @@ class User extends Authenticatable implements HasTenants
      * @var array<int, string>
      */
     protected $fillable = [
+        'avatar',
         'name',
         'email',
         'password',
@@ -88,5 +91,19 @@ class User extends Authenticatable implements HasTenants
     public function team(): BelongsToMany
     {
         return $this->belongsToMany(Team::class);
+    }
+
+    public function getFilamentAvatarUrl(): ?string
+    {
+        return $this->avatar ? Storage::url($this->avatar) : null;
+    }
+
+    public function deleteAvatar()
+    {
+        if ($this->avatar) {
+            Storage::delete($this->avatar);
+            $this->avatar = null;
+            $this->save();
+        }
     }
 }
