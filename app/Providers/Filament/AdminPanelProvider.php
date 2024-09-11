@@ -67,7 +67,7 @@ class AdminPanelProvider extends PanelProvider
             ->topNavigation()
             ->registration(Register::class)
             ->passwordReset()
-            ->profile(EditProfile::class, isSimple: false)
+            ->profile(EditProfile::class)
             ->databaseNotifications();
     }
 }
