@@ -28,6 +28,13 @@ class UserResource extends Resource
             ->schema([
                 Forms\Components\Section::make()
                     ->schema([
+                        Forms\Components\FileUpload::make('avatar')
+                            ->image()
+                            ->imageEditor()
+                            ->disk('public')
+                            ->directory('avatars')
+                            ->visibility('public')
+                            ->avatar(),
                         Forms\Components\TextInput::make('name'),
                         Forms\Components\TextInput::make('email')
                             ->email()
@@ -170,6 +177,7 @@ class UserResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\ImageColumn::make('avatar')->label(''),
                 Tables\Columns\TextColumn::make('name'),
                 Tables\Columns\TextColumn::make('email'),
                 Tables\Columns\TextColumn::make('user_role')->label('Role'),
