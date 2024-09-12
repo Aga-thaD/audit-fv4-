@@ -62,14 +62,19 @@ class PhoneQCResource extends Resource
                         Forms\Components\Select::make('user_id')->label('Name')
                             ->required()
                             ->options(function (callable $get) {
-                                $lob = $get('lob');
-                                if (!$lob) {
-                                    return User::all()->pluck('name', 'id');
+                                $lob = $get('pqc_lob');
+                                $query = User::whereHas('teams', function ($query) {
+                                    $query->where('slug', 'truesource-team');
+                                });
+
+                                if ($lob) {
+                                    $query->where(function ($query) use ($lob) {
+                                        $query->whereJsonContains('user_lob', $lob)
+                                            ->orWhere('user_lob', 'like', '%' . $lob . '%');
+                                    });
                                 }
-                                return User::where(function ($query) use ($lob) {
-                                    $query->whereJsonContains('user_lob', $lob)
-                                        ->orWhere('user_lob', 'like', '%' . $lob . '%');
-                                })->pluck('name', 'id');
+
+                                return $query->pluck('name', 'id');
                             })
                             ->reactive()
                             ->searchable()
