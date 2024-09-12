@@ -14,7 +14,9 @@ class AuditExporter extends Exporter
     public static function getColumns(): array
     {
         return [
-            ExportColumn::make('user_id')->label('Associate'),
+            ExportColumn::make('user.name')
+                ->label('Associate')
+                ->formatStateUsing(fn ($state) => $state ?? 'N/A'),
             ExportColumn::make('lob')->label('LOB'),
             ExportColumn::make('aud_auditor')->label('Auditor'),
             ExportColumn::make('aud_date')->label('Date'),
@@ -26,9 +28,11 @@ class AuditExporter extends Exporter
             ExportColumn::make('aud_area_hit')->label('Area Hit'),
             ExportColumn::make('aud_error_category')->label('Error Category'),
             ExportColumn::make('aud_nature_of_error')->label('Nature Of Error'),
-            ExportColumn::make('aud_feedback')->label('Feedback'),
+            ExportColumn::make('aud_feedback')->label('Feedback')
+                ->formatStateUsing(fn ($state) => strip_tags($state)),
             ExportColumn::make('aud_status')->label('Status'),
-            ExportColumn::make('aud_associate_feedback')->label('Associate Feedback'),
+            ExportColumn::make('aud_associate_feedback')->label('Associate Feedback')
+                ->formatStateUsing(fn ($state) => strip_tags($state)),
             ExportColumn::make('aud_dispute_timestamp')->label('Dispute Timestamp'),
             ExportColumn::make('created_at'),
             ExportColumn::make('updated_at'),
