@@ -305,6 +305,7 @@ class PhoneQCResource extends Resource
                                 TextEntry::make('pqc_lob')->label('LOB'),
                                 TextEntry::make('user.name')->label('Name'),
                                 TextEntry::make('pqc_auditor')->label('Auditor'),
+                                TextEntry::make('pqc_case_number')->label('Case/WO #'),
                                 TextEntry::make('pqc_audit_date')->label('Audit Date'),
                                 TextEntry::make('pqc_date_processed')->label('Date Processed'),
                                 TextEntry::make('pqc_time_processed')->label('Time Processed'),
