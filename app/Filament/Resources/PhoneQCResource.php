@@ -84,6 +84,7 @@ class PhoneQCResource extends Resource
                             ->label('Auditor')
                             ->default(fn () => Auth::user()->name)
                             ->readOnly(),
+                        Forms\Components\TextInput::make('pqc_case_number')->label('Case/WO #'),
                         Forms\Components\DatePicker::make('pqc_audit_date')
                             ->label('Audit Date')
                             ->default(fn () => Carbon::today()->toDateString())

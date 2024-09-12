@@ -15,6 +15,7 @@ class PhoneQC extends Model
         'pqc_lob',
         'pqc_case_number',
         'pqc_auditor',
+        'pqc_case_number',
         'pqc_audit_date',
         'pqc_date_processed',
         'pqc_time_processed',
