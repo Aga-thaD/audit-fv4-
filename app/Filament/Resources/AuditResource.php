@@ -341,11 +341,17 @@ class AuditResource extends Resource
                                                 TextEntry::make('aud_area_hit')->label('Area Hit'),
                                                 TextEntry::make('aud_error_category')->label('Error Category'),
                                                 TextEntry::make('aud_type_of_error')->label('Error Type'),
+                                                TextEntry::make('aud_source_type')
+                                                    ->label('Source Type')
+                                                    ->visible(fn ($record) => $record->lob === 'CALL ENTERING'),
                                             ]),
+                                    ]),
+                                Section::make()
+                                    ->schema([
                                         TextEntry::make('aud_feedback')->label('Feedback')->html(),
                                         ImageEntry::make('aud_screenshot')->label('Screenshot'),
                                         TextEntry::make('aud_status')->label('Status'),
-                                    ]),
+                                    ])
                             ]),
                         Tabs\Tab::make('Dispute Remarks')
                             ->schema([
