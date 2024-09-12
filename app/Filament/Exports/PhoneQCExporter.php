@@ -14,9 +14,9 @@ class PhoneQCExporter extends Exporter
     public static function getColumns(): array
     {
         return [
-            ExportColumn::make('user_id')
+            ExportColumn::make('user.name')
                 ->label('Associate')
-                ->formatStateUsing(fn ($state) => $state->name ?? $state),
+                ->formatStateUsing(fn ($state) => $state ?? 'N/A'),
             ExportColumn::make('pqc_lob')->label('LOB'),
             ExportColumn::make('pqc_case_number')->label('Case Number'),
             ExportColumn::make('pqc_auditor')->label('Auditor'),
@@ -24,14 +24,18 @@ class PhoneQCExporter extends Exporter
             ExportColumn::make('pqc_date_processed')->label('Date Processed'),
             ExportColumn::make('pqc_time_processed')->label('Time Processed'),
             ExportColumn::make('pqc_type_of_call')->label('Type of Call'),
-            ExportColumn::make('pqc_call_summary')->label('Call Summary'),
-            ExportColumn::make('pqc_strengths')->label('Strengths'),
-            ExportColumn::make('pqc_opportunities')->label('Opportunities'),
+            ExportColumn::make('pqc_call_summary')->label('Call Summary')
+                ->formatStateUsing(fn ($state) => strip_tags($state)),
+            ExportColumn::make('pqc_strengths')->label('Strengths')
+                ->formatStateUsing(fn ($state) => strip_tags($state)),
+            ExportColumn::make('pqc_opportunities')->label('Opportunities')
+                ->formatStateUsing(fn ($state) => strip_tags($state)),
             ExportColumn::make('pqc_scorecard')->label('Scorecard')
                 ->formatStateUsing(fn ($state) => static::formatJsonColumn($state)),
             ExportColumn::make('pqc_score')->label('Score'),
             ExportColumn::make('pqc_status')->label('Status'),
-            ExportColumn::make('pqc_associate_feedback')->label('Associate Feedback'),
+            ExportColumn::make('pqc_associate_feedback')->label('Associate Feedback')
+                ->formatStateUsing(fn ($state) => strip_tags($state)),
             ExportColumn::make('pqc_dispute_timestamp')->label('Dispute Timestamp'),
             ExportColumn::make('created_at'),
             ExportColumn::make('updated_at'),
