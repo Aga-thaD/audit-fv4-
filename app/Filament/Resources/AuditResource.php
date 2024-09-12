@@ -81,13 +81,17 @@ class AuditResource extends Resource
                                     ->required()
                                     ->options(function (callable $get) {
                                         $lob = $get('lob');
-                                        if (!$lob) {
-                                            return User::all()->pluck('name', 'id');
+                                        $query = User::query()
+                                            ->whereNotIn('user_role', ['Admin', 'Manager']);
+
+                                        if ($lob) {
+                                            $query->where(function ($query) use ($lob) {
+                                                $query->whereJsonContains('user_lob', $lob)
+                                                    ->orWhere('user_lob', 'like', '%' . $lob . '%');
+                                            });
                                         }
-                                        return User::where(function ($query) use ($lob) {
-                                            $query->whereJsonContains('user_lob', $lob)
-                                                ->orWhere('user_lob', 'like', '%' . $lob . '%');
-                                        })->pluck('name', 'id');
+
+                                        return $query->pluck('name', 'id');
                                     })
                                     ->reactive()
                                     ->searchable()
