@@ -138,8 +138,7 @@ class PhoneQCResource extends Resource
                                         switch ($category) {
                                             case 'Opening and Closing Spiel':
                                                 return [
-                                                    'Name' => 'Name',
-                                                    'Branding' => 'Branding',
+                                                    'Name / Branding' => 'Name / Branding',
                                                     'Compliance - Recorded Line' => 'Compliance - Recorded Line',
                                                     'Thank you and Goodbye' => 'Thank you and Goodbye',
                                                 ];
@@ -161,8 +160,7 @@ class PhoneQCResource extends Resource
                                     })
                                     ->afterStateUpdated(function (callable $set, $state, callable $get) {
                                         $weightageMap = [
-                                            'Name' => 3,
-                                            'Branding' => 3,
+                                            'Name / Branding' => 3,
                                             'Compliance - Recorded Line' => 5,
                                             'Thank you and Goodbye' => 2,
                                             'Active Listening / Comprehension / Communication / Empathy' => 10,
