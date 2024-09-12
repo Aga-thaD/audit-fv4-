@@ -65,7 +65,8 @@ class PhoneQCResource extends Resource
                                 $lob = $get('pqc_lob');
                                 $query = User::whereHas('teams', function ($query) {
                                     $query->where('slug', 'truesource-team');
-                                });
+                                })
+                                    ->whereNotIn('user_role', ['Manager', 'Admin']);
 
                                 if ($lob) {
                                     $query->where(function ($query) use ($lob) {
