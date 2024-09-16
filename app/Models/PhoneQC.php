@@ -30,6 +30,7 @@ class PhoneQC extends Model
         'pqc_associate_feedback',
         'pqc_associate_screenshot',
         'pqc_dispute_timestamp',
+        'pqc_acknowledge_timestamp',
     ];
 
     protected $casts = [

@@ -248,20 +248,25 @@ class PhoneQCResource extends Resource
                         })
                         ->requiresConfirmation()
                         ->visible(fn (PhoneQC $record) =>
-                            Auth::user()->user_role === 'Associate' &&
-                            $record->pqc_status === 'Pending'
+                            in_array(Auth::user()->user_role, ['Auditor', 'Associate']) &&
+                            $record->pqc_status === 'Pending' &&
+                            (Auth::user()->user_role === 'Associate' ? Auth::id() === $record->user_id : true)
                         ),
                     Tables\Actions\Action::make('Acknowledge')
                         ->label('Acknowledge')
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
                         ->action(function (PhoneQC $record) {
-                            $record->update(['pqc_status' => 'Acknowledged']);
+                            $record->update([
+                                'pqc_status' => 'Acknowledged',
+                                'pqc_acknowledge_timestamp' => now(),
+                            ]);
                         })
                         ->requiresConfirmation()
                         ->visible(fn (PhoneQC $record) =>
-                            Auth::user()->user_role === 'Associate' &&
-                            $record->pqc_status === 'Pending'
+                            in_array(Auth::user()->user_role, ['Auditor', 'Associate']) &&
+                            $record->pqc_status === 'Pending' &&
+                            (Auth::user()->user_role === 'Associate' ? Auth::id() === $record->user_id : true)
                         ),
                     Tables\Actions\Action::make('Mark as Pending')
                         ->label('Mark as Pending')
@@ -343,6 +348,8 @@ class PhoneQCResource extends Resource
                                 ImageEntry::make('pqc_associate_screenshot')->label('Screenshot'),
                                 TextEntry::make('pqc_dispute_timestamp')->label('Dispute Filed On')
                                     ->dateTime('m/d/Y H:i:s'), // Add this line to display the dispute timestamp
+                                TextEntry::make('pqc_acknowledge_timestamp')->label('Acknowledge Filed On')
+                                    ->dateTime('m/d/Y H:i:s'),
                             ])->visible(fn ($record) => $record->pqc_status === 'Disputed'),
                     ])->columnSpanFull()
             ]);

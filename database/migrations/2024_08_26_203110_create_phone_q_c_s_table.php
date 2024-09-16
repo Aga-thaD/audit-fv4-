@@ -32,6 +32,7 @@ return new class extends Migration
             $table->longText('pqc_associate_feedback')->nullable();
             $table->string('pqc_associate_screenshot')->nullable();
             $table->timestamp('pqc_dispute_timestamp')->nullable();
+            $table->timestamp('pqc_acknowledge_timestamp')->nullable();
             $table->timestamps();
         });
     }
