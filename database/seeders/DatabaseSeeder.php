@@ -68,6 +68,28 @@ class DatabaseSeeder extends Seeder
                 'teams' => ['TrueSource']
             ],
             [
+                'name' => 'Juan Dela Cruz',
+                'email' => 'juan.delacruz@teamspan.com',
+                'password' => Hash::make('password'),
+                'user_role' => 'Associate',
+                'user_lob' => ['ERG FOLLOW-UP'],
+                'audit_create' => false, 'audit_view' => true, 'audit_update' => true, 'audit_delete' => false,
+                'pqc_create' => false, 'pqc_view' => true, 'pqc_update' => true, 'pqc_delete' => false,
+                'user_create' => false, 'user_view' => false, 'user_update' => false, 'user_delete' => false,
+                'teams' => ['TrueSource']
+            ],
+            [
+                'name' => 'Peyton Manning',
+                'email' => 'peyton.manning@teamspan.com',
+                'password' => Hash::make('password'),
+                'user_role' => 'Associate',
+                'user_lob' => ['Document Processing'],
+                'audit_create' => false, 'audit_view' => true, 'audit_update' => true, 'audit_delete' => false,
+                'pqc_create' => false, 'pqc_view' => true, 'pqc_update' => true, 'pqc_delete' => false,
+                'user_create' => false, 'user_view' => false, 'user_update' => false, 'user_delete' => false,
+                'teams' => ['TrueSource']
+            ],
+            [
                 'name' => 'Jane Doe',
                 'email' => 'jane.doe@teamspan.com',
                 'password' => Hash::make('password'),
