@@ -29,7 +29,8 @@ class Audit extends Model
         'aud_status',
         'aud_associate_feedback',
         'aud_associate_screenshot',
-        'aud_dispute_timestamp'
+        'aud_dispute_timestamp',
+        'aud_acknowledge_timestamp',
 
     ];
 

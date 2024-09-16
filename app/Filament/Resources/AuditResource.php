@@ -255,20 +255,25 @@ class AuditResource extends Resource
                         })
                         ->requiresConfirmation()
                         ->visible(fn (Audit $record) =>
-                            Auth::user()->user_role === 'Associate' &&
-                            $record->aud_status === 'Pending'
+                            in_array(Auth::user()->user_role, ['Auditor', 'Associate']) &&
+                            $record->aud_status === 'Pending' &&
+                            (Auth::user()->user_role === 'Associate' ? Auth::id() === $record->user_id : true)
                         ),
                     Tables\Actions\Action::make('Acknowledge')
                         ->label('Acknowledge')
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
                         ->action(function (Audit $record) {
-                            $record->update(['aud_status' => 'Acknowledged']);
+                            $record->update([
+                                'aud_status' => 'Acknowledged',
+                                'aud_acknowledge_timestamp' => now(),
+                            ]);
                         })
                         ->requiresConfirmation()
                         ->visible(fn (Audit $record) =>
-                            Auth::user()->user_role === 'Associate' &&
-                            $record->aud_status === 'Pending'
+                            in_array(Auth::user()->user_role, ['Auditor', 'Associate']) &&
+                            $record->aud_status === 'Pending' &&
+                            (Auth::user()->user_role === 'Associate' ? Auth::id() === $record->user_id : true)
                         ),
                     Tables\Actions\Action::make('Mark as Pending')
                         ->label('Mark as Pending')
