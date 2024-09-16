@@ -16,7 +16,6 @@ return new class extends Migration
             $table->foreignId('team_id')->constrained();
             $table->foreignId('user_id')->constrained();
             $table->string('pqc_lob')->nullable();
-            $table->string('pqc_case_number')->nullable();
             $table->string('pqc_auditor')->nullable();
             $table->string('pqc_case_number')->nullable();
             $table->date('pqc_audit_date')->nullable();
