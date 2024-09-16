@@ -365,6 +365,9 @@ class AuditResource extends Resource
                                 TextEntry::make('aud_dispute_timestamp')->label('Dispute Filed On')
                                     ->timezone('America/New_York')
                                     ->dateTime('m/d/Y H:i:s'), // Add this line to display the dispute timestamp
+                                TextEntry::make('aud_acknowledge_timestamp')->label('Acknowledge Filed On')
+                                    ->timezone('America/New_York')
+                                    ->dateTime('m/d/Y H:i:s'),
                             ])->visible(fn ($record) => $record->aud_status === 'Disputed'),
                     ])->columnSpanFull(),
             ]);
