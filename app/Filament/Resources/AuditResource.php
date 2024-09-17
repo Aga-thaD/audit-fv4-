@@ -140,7 +140,17 @@ class AuditResource extends Resource
                                         'Others' => 'Others',
                                         'Not Applicable' => 'Not Applicable',
                                     ])
-                                    ->native(false),
+                                    ->native(false)
+                                    ->reactive()
+                                    ->afterStateUpdated(function (callable $set, $state) {
+                                        if ($state === 'Not Applicable') {
+                                            $set('aud_error_category', 'NOT APPLICABLE');
+                                            $set('aud_type_of_error', null);
+                                        } else {
+                                            $set('aud_error_category', null);
+                                            $set('aud_type_of_error', null);
+                                        }
+                                    }),
                                 Forms\Components\Select::make('aud_error_category')
                                     ->label('Error Category')
                                     ->options([
@@ -165,7 +175,9 @@ class AuditResource extends Resource
                                             }
                                         }
                                     })
-                                    ->required(),
+                                    ->required()
+                                    ->disabled(fn (callable $get) => $get('aud_area_hit') === 'Not Applicable')
+                                    ->dehydrated(),
                                 Forms\Components\Select::make('aud_type_of_error')
                                     ->label('Error Type')
                                     ->options(function (callable $get) {
@@ -179,8 +191,8 @@ class AuditResource extends Resource
                                     ->reactive()
                                     ->searchable()
                                     ->required()
-                                    ->disabled(fn (callable $get) => $get('aud_error_category') === 'NOT APPLICABLE')
-                                    ->dehydrated(fn (callable $get) => $get('aud_error_category') !== 'NOT APPLICABLE'),
+                                    ->disabled(fn (callable $get) => $get('aud_area_hit') === 'Not Applicable' || $get('aud_error_category') === 'NOT APPLICABLE')
+                                    ->dehydrated(),
                             ]),
                         Forms\Components\Select::make('aud_source_type')
                             ->label('Source Type')
