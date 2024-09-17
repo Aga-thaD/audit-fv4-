@@ -223,14 +223,22 @@ class AuditResource extends Resource
                     ->exporter(AuditExporter::class)
             ])
             ->columns([
-                Tables\Columns\TextColumn::make('aud_case_number')->label('Case/WO #'),
-                Tables\Columns\TextColumn::make('aud_error_category')->label('Error Category'),
-                Tables\Columns\TextColumn::make('lob')->label('LOB'),
-                Tables\Columns\TextColumn::make('user.name')->label('Name'),
-                Tables\Columns\TextColumn::make('aud_auditor')->label('Auditor'),
-                Tables\Columns\TextColumn::make('aud_customer')->label('Customer'),
-                Tables\Columns\TextColumn::make('aud_date')->label('Audit Date'),
+                Tables\Columns\TextColumn::make('aud_case_number')->label('Case/WO #')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('aud_error_category')->label('Error Category')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('lob')->label('LOB')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('user.name')->label('Name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('aud_auditor')->label('Auditor')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('aud_customer')->label('Customer')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('aud_date')->label('Audit Date')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('aud_status')->label('Status')
+                    ->searchable()
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'Pending' => 'warning',

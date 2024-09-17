@@ -206,12 +206,18 @@ class PhoneQCResource extends Resource
                     ->exporter(PhoneQCExporter::class)
             ])
             ->columns([
-                Tables\Columns\TextColumn::make('pqc_lob')->label('LOB'),
-                Tables\Columns\TextColumn::make('user.name')->label('Name'),
-                Tables\Columns\TextColumn::make('pqc_auditor')->label('Auditor'),
-                Tables\Columns\TextColumn::make('pqc_audit_date')->label('Audit Date'),
-                Tables\Columns\TextColumn::make('pqc_score')->label('Score'),
+                Tables\Columns\TextColumn::make('pqc_lob')->label('LOB')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('user.name')->label('Name')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('pqc_auditor')->label('Auditor')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('pqc_audit_date')->label('Audit Date')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('pqc_score')->label('Score')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('pqc_status')->label('Status')
+                    ->searchable()
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'Pending' => 'warning',
