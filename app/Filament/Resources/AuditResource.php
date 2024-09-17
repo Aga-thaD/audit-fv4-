@@ -239,7 +239,22 @@ class AuditResource extends Resource
                     }),
             ])
             ->filters([
-                //
+                Tables\Filters\Filter::make('aud_date')
+                    ->form([
+                        Forms\Components\DatePicker::make('aud_from'),
+                        Forms\Components\DatePicker::make('aud_until'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['aud_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('aud_date', '>=', $date),
+                            )
+                            ->when(
+                                $data['aud_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('aud_date', '<=', $date),
+                            );
+                    })
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

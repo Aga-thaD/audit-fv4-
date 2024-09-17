@@ -220,7 +220,22 @@ class PhoneQCResource extends Resource
                     }),
             ])
             ->filters([
-                //
+                Tables\Filters\Filter::make('pqc_audit_date')
+                    ->form([
+                        Forms\Components\DatePicker::make('pqc_from'),
+                        Forms\Components\DatePicker::make('pqc_until'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['pqc_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('pqc_audit_date', '>=', $date),
+                            )
+                            ->when(
+                                $data['pqc_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('pqc_audit_date', '<=', $date),
+                            );
+                    })
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
