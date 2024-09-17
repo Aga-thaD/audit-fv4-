@@ -349,7 +349,19 @@ class PhoneQCResource extends Resource
                                         if (!$state) {
                                             return new HtmlString('No recording available');
                                         }
-                                        $url = Storage::url($state);
+
+                                        // Check if the file exists
+                                        if (!Storage::exists($state)) {
+                                            return new HtmlString('Recording file not found');
+                                        }
+
+                                        // Generate a temporary URL for the file
+                                        $url = Storage::temporaryUrl(
+                                            $state,
+                                            now()->addMinutes(5),
+                                            ['ResponseContentDisposition' => 'attachment']
+                                        );
+
                                         return new HtmlString("<a href='{$url}' download style='color: blue'><u>Click to download recording</u></a>");
                                     }),
                             ]),
