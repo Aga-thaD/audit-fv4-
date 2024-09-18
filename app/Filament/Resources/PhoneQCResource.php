@@ -112,7 +112,9 @@ class PhoneQCResource extends Resource
                         Forms\Components\Textarea::make('pqc_call_summary')->label('Call Summary'),
                         Forms\Components\Textarea::make('pqc_strengths')->label('Strength/s'),
                         Forms\Components\Textarea::make('pqc_opportunities')->label('Opportunities'),
-                        Forms\Components\FileUpload::make('pqc_call_recording')->label('Call Recording'),
+                        Forms\Components\FileUpload::make('pqc_call_recording')->label('Call Recording')
+                            ->disk('public')
+                            ->directory('avatars'),
                     ])->columnSpan(1),
                 Forms\Components\Section::make('Scorecard')
                     ->schema([
@@ -346,23 +348,11 @@ class PhoneQCResource extends Resource
                                 TextEntry::make('pqc_call_recording')
                                     ->label('Call Recording')
                                     ->formatStateUsing(function ($state) {
-                                        if (!$state) {
-                                            return new HtmlString('No recording available');
+                                        if ($state) {
+                                            $url = Storage::disk('public')->url($state);
+                                            return new HtmlString("<a href='{$url}' download class='filament-button filament-button-size-sm inline-flex items-center justify-center py-1 gap-1 font-medium rounded-lg border transition-colors focus:outline-none focus:ring-offset-2 focus:ring-2 focus:ring-inset dark:focus:ring-offset-0 min-h-[2rem] px-3 text-sm text-white shadow focus:ring-white border-transparent bg-primary-600 hover:bg-primary-500 focus:bg-primary-700 focus:ring-offset-primary-700'>Download Recording</a>");
                                         }
-
-                                        // Check if the file exists
-                                        if (!Storage::exists($state)) {
-                                            return new HtmlString('Recording file not found');
-                                        }
-
-                                        // Generate a temporary URL for the file
-                                        $url = Storage::temporaryUrl(
-                                            $state,
-                                            now()->addMinutes(5),
-                                            ['ResponseContentDisposition' => 'attachment']
-                                        );
-
-                                        return new HtmlString("<a href='{$url}' download style='color: blue'><u>Click to download recording</u></a>");
+                                        return 'No recording available';
                                     }),
                             ]),
                         Tabs\Tab::make('Scorecard')
