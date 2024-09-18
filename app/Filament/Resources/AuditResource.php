@@ -208,8 +208,29 @@ class AuditResource extends Resource
                             ->reactive()
                             ->native(false),
                         Forms\Components\RichEditor::make('aud_feedback')->label('Feedback')
-                            ->required(),
-                        Forms\Components\FileUpload::make('aud_screenshot')->label('Screenshot'),
+                            ->required()
+                            ->visible(function () {
+                                $user = Auth::user();
+                                return $user->teams->contains('slug', 'truesource-team') || $user->user_role === 'Admin';
+                            }),
+                        Forms\Components\FileUpload::make('aud_screenshot')->label('Screenshot')
+                            ->visible(function () {
+                                $user = Auth::user();
+                                return $user->teams->contains('slug', 'truesource-team') || $user->user_role === 'Admin';
+                            }),
+                        Forms\Components\RichEditor::make('aud_fascilit_notes')->label('FascilIT Notes')
+                            ->required()
+                            ->visible(function () {
+                                $user = Auth::user();
+                                return $user->teams->contains('slug', 'sos-team') || $user->user_role === 'Admin';
+                            }),
+                        Forms\Components\FileUpload::make('aud_attachmment')->label('Attachment')
+                            ->visible(function () {
+                                $user = Auth::user();
+                                return $user->teams->contains('slug', 'sos-team') || $user->user_role === 'Admin';
+                            }),
+                        Forms\Components\Hidden::make('aud_status')
+                            ->default('Pending'),
                         Forms\Components\Hidden::make('aud_status')
                             ->default('Pending'),
                     ])
@@ -391,8 +412,14 @@ class AuditResource extends Resource
                                     ]),
                                 Section::make()
                                     ->schema([
-                                        TextEntry::make('aud_feedback')->label('Feedback')->html(),
-                                        ImageEntry::make('aud_screenshot')->label('Screenshot'),
+                                        TextEntry::make('aud_feedback')->label('Feedback')->html()
+                                            ->visible(fn () => Auth::user()->teams->contains('slug', 'truesource-team') || Auth::user()->user_role === 'Admin'),
+                                        ImageEntry::make('aud_screenshot')->label('Screenshot')
+                                            ->visible(fn () => Auth::user()->teams->contains('slug', 'truesource-team') || Auth::user()->user_role === 'Admin'),
+                                        TextEntry::make('aud_fascilit_notes')->label('FascilIT Notes')->html()
+                                            ->visible(fn () => Auth::user()->teams->contains('slug', 'sos-team') || Auth::user()->user_role === 'Admin'),
+                                        ImageEntry::make('aud_attachmment')->label('Attachment')
+                                            ->visible(fn () => Auth::user()->teams->contains('slug', 'sos-team') || Auth::user()->user_role === 'Admin'),
                                         TextEntry::make('aud_status')->label('Status'),
                                     ])
                             ]),

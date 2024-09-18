@@ -26,6 +26,8 @@ class Audit extends Model
         'aud_source_type',
         'aud_feedback',
         'aud_screenshot',
+        'aud_fascilit_notes',
+        'aud_attachmment',
         'aud_status',
         'aud_associate_feedback',
         'aud_associate_screenshot',

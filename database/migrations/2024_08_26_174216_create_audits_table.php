@@ -29,6 +29,8 @@ return new class extends Migration
             $table->string('aud_source_type')->nullable();
             $table->longText('aud_feedback')->nullable();
             $table->string('aud_screenshot')->nullable();
+            $table->longText('aud_fascilit_notes')->nullable();
+            $table->string('aud_attachmment')->nullable();
             $table->string('aud_status')->nullable();
             $table->longText('aud_associate_feedback')->nullable();
             $table->string('aud_associate_screenshot')->nullable();
