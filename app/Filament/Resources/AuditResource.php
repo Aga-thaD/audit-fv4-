@@ -120,6 +120,7 @@ class AuditResource extends Resource
                                     ])
                                     ->native(false),
                                 Forms\Components\TextInput::make('aud_case_number')->label('Case/WO #')
+                                    ->visible(fn () => !Auth::user()->teams->contains('slug', 'sos-team'))
                                     ->required(),
                                 Forms\Components\Select::make('aud_audit_type')->label('Type of Audit')
                                     ->required()
@@ -224,6 +225,7 @@ class AuditResource extends Resource
             ])
             ->columns([
                 Tables\Columns\TextColumn::make('aud_case_number')->label('Case/WO #')
+                    ->visible(fn () => !Auth::user()->teams->contains('slug', 'sos-team'))
                     ->searchable(),
                 Tables\Columns\TextColumn::make('aud_error_category')->label('Error Category')
                     ->searchable(),
@@ -375,7 +377,8 @@ class AuditResource extends Resource
                                                 TextEntry::make('aud_date')->label('Audit Date')->date('m/d/Y'),
                                                 TextEntry::make('aud_date_processed')->label('Date Processed')->date('m/d/Y'),
                                                 TextEntry::make('aud_time_processed')->label('Time Processed'),
-                                                TextEntry::make('aud_case_number')->label('Case/WO #'),
+                                                TextEntry::make('aud_case_number')->label('Case/WO #')
+                                                    ->visible(fn () => !Auth::user()->teams->contains('slug', 'sos-team')),
                                                 TextEntry::make('aud_audit_type')->label('Type of Audit'),
                                                 TextEntry::make('aud_customer')->label('Customer'),
                                                 TextEntry::make('aud_area_hit')->label('Area Hit'),
