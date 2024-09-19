@@ -475,6 +475,7 @@ class AuditResource extends Resource
                     'Missing/Incorrect case notes' => 'Missing/Incorrect case notes',
                     'Security or Safety Box' => 'Security or Safety Box',
                     'Special Instruction Not Followed' => 'Special Instruction Not Followed',
+                    'Security or dafety box/recall' => 'Security or dafety box/recall',
                 ],
             ],
             'ERG FOLLOW-UP' => [
