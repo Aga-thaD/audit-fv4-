@@ -204,6 +204,7 @@ class PhoneQCResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->recordUrl(false)
             ->headerActions([
                 Tables\Actions\ExportAction::make()->label('Export Phone QCs')
                     ->exporter(PhoneQCExporter::class)

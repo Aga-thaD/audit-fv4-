@@ -240,6 +240,7 @@ class AuditResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->recordUrl(false)
             ->headerActions([
                 Tables\Actions\ExportAction::make()->label('Export Audits')
                     ->exporter(AuditExporter::class)
