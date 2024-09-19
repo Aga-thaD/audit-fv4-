@@ -20,6 +20,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
 
@@ -292,7 +293,14 @@ class AuditResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\EditAction::make()
-                        ->visible(fn () => in_array(Auth::user()->user_role, ['Admin', 'Manager', 'Auditor'])),
+                        ->visible(fn (Model $record) =>
+                        static::canEdit($record)
+                        )
+                        ->before(function (Model $record) {
+                            if (!static::canEdit($record)) {
+                                abort(403, 'You are not authorized to edit this audit.');
+                            }
+                        }),
                     Tables\Actions\Action::make('Dispute')
                         ->label('Dispute')
                         ->icon('heroicon-o-exclamation-circle')
@@ -363,6 +371,27 @@ class AuditResource extends Resource
                 }
                 // Admin users can see all audits, so no additional filtering is needed for them
             });
+    }
+
+    public static function canEdit(Model $record): bool
+    {
+        if (!$record instanceof Audit) {
+            return false;
+        }
+
+        $user = Auth::user();
+
+        switch ($user->user_role) {
+            case 'Admin':
+            case 'Manager':
+                return true;
+            case 'Auditor':
+                // Auditor can edit all audits except those where they are the subject
+                return $record->user_id !== $user->id;
+            case 'Associate':
+            default:
+                return false;
+        }
     }
 
     public static function getRelations(): array
