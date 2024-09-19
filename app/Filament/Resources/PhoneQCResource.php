@@ -184,8 +184,9 @@ class PhoneQCResource extends Resource
                                     ->reactive()
                                     ->searchable(),
                                 Forms\Components\TextInput::make('pqc_weightage')->label('Weightage')
-                                    ->readOnly()
-                            ])->columns(3)
+                                    ->readOnly(),
+                                Forms\Components\TextInput::make('comments'),
+                            ])->columns(4)
                             ->deleteAction(
                                 fn (Forms\Components\Actions\Action $action) => $action
                                     ->after(function (Forms\Components\Repeater $component, callable $get, callable $set) {
