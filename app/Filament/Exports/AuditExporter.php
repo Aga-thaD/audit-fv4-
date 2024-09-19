@@ -27,7 +27,7 @@ class AuditExporter extends Exporter
             ExportColumn::make('aud_customer')->label('Customer'),
             ExportColumn::make('aud_area_hit')->label('Area Hit'),
             ExportColumn::make('aud_error_category')->label('Error Category'),
-            ExportColumn::make('aud_nature_of_error')->label('Nature Of Error'),
+            ExportColumn::make('aud_type_of_error')->label('Nature Of Error'),
             ExportColumn::make('aud_feedback')->label('Feedback')
                 ->formatStateUsing(fn ($state) => strip_tags($state)),
             ExportColumn::make('aud_status')->label('Status'),
