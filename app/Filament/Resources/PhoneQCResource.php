@@ -114,7 +114,7 @@ class PhoneQCResource extends Resource
                         Forms\Components\Textarea::make('pqc_opportunities')->label('Opportunities'),
                         Forms\Components\FileUpload::make('pqc_call_recording')->label('Call Recording')
                             ->disk('public')
-                            ->directory('avatars'),
+                            ->directory('recordings'),
                     ])->columnSpan(1),
                 Forms\Components\Section::make('Scorecard')
                     ->schema([
