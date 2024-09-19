@@ -6,6 +6,7 @@ use App\Models\Audit;
 use Filament\Actions\Exports\ExportColumn;
 use Filament\Actions\Exports\Exporter;
 use Filament\Actions\Exports\Models\Export;
+use Carbon\Carbon;
 
 class AuditExporter extends Exporter
 {
@@ -19,8 +20,12 @@ class AuditExporter extends Exporter
                 ->formatStateUsing(fn ($state) => $state ?? 'N/A'),
             ExportColumn::make('lob')->label('LOB'),
             ExportColumn::make('aud_auditor')->label('Auditor'),
-            ExportColumn::make('aud_date')->label('Date'),
-            ExportColumn::make('aud_date_processed')->label('Date Processed'),
+            ExportColumn::make('aud_date')
+                ->label('Date')
+                ->formatStateUsing(fn ($state) => $state ? Carbon::parse($state)->format('m/d/Y') : null),
+            ExportColumn::make('aud_date_processed')
+                ->label('Date Processed')
+                ->formatStateUsing(fn ($state) => $state ? Carbon::parse($state)->format('m/d/Y') : null),
             ExportColumn::make('aud_time_processed')->label('Time Processed'),
             ExportColumn::make('aud_case_number')->label('Case Number'),
             ExportColumn::make('aud_audit_type')->label('Audit Type'),
@@ -28,14 +33,33 @@ class AuditExporter extends Exporter
             ExportColumn::make('aud_area_hit')->label('Area Hit'),
             ExportColumn::make('aud_error_category')->label('Error Category'),
             ExportColumn::make('aud_type_of_error')->label('Nature Of Error'),
-            ExportColumn::make('aud_feedback')->label('Feedback')
+            ExportColumn::make('aud_feedback')
+                ->label('Feedback')
                 ->formatStateUsing(fn ($state) => strip_tags($state)),
             ExportColumn::make('aud_status')->label('Status'),
-            ExportColumn::make('aud_associate_feedback')->label('Associate Feedback')
+            ExportColumn::make('aud_associate_feedback')
+                ->label('Associate Feedback')
                 ->formatStateUsing(fn ($state) => strip_tags($state)),
-            ExportColumn::make('aud_dispute_timestamp')->label('Dispute Timestamp'),
-            ExportColumn::make('created_at'),
-            ExportColumn::make('updated_at'),
+            ExportColumn::make('aud_dispute_timestamp')
+                ->label('Dispute Timestamp')
+                ->formatStateUsing(function ($state) {
+                    if (!$state) return null;
+                    return Carbon::parse($state)
+                        ->setTimezone('America/New_York')
+                        ->format('m/d/Y H:i:s');
+                }),
+            ExportColumn::make('created_at')
+                ->formatStateUsing(function ($state) {
+                    return Carbon::parse($state)
+                        ->setTimezone('America/New_York')
+                        ->format('m/d/Y H:i:s');
+                }),
+            ExportColumn::make('updated_at')
+                ->formatStateUsing(function ($state) {
+                    return Carbon::parse($state)
+                        ->setTimezone('America/New_York')
+                        ->format('m/d/Y H:i:s');
+                }),
         ];
     }
 
