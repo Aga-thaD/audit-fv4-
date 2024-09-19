@@ -135,7 +135,7 @@ class AuditResource extends Resource
                                     ->required()
                                     ->options([
                                         'Work Order Level' => 'Work Order Level',
-                                        'Case Level' => 'Case Level',
+                                        'Case Level' => 'Case Leve  l',
                                         'Portal' => 'Portal',
                                         'Emails' => 'Emails',
                                         'Others' => 'Others',
@@ -176,7 +176,7 @@ class AuditResource extends Resource
                                             }
                                         }
                                     })
-                                    ->required()
+                                    ->required(fn (callable $get) => $get('aud_area_hit') !== 'Not Applicable')
                                     ->disabled(fn (callable $get) => $get('aud_area_hit') === 'Not Applicable')
                                     ->dehydrated(),
                                 Forms\Components\Select::make('aud_type_of_error')
@@ -191,7 +191,7 @@ class AuditResource extends Resource
                                     })
                                     ->reactive()
                                     ->searchable()
-                                    ->required()
+                                    ->required(fn (callable $get) => $get('aud_area_hit') !== 'Not Applicable' && $get('aud_error_category') !== 'NOT APPLICABLE')
                                     ->disabled(fn (callable $get) => $get('aud_area_hit') === 'Not Applicable' || $get('aud_error_category') === 'NOT APPLICABLE')
                                     ->dehydrated(),
                             ]),
