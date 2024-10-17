@@ -106,4 +106,26 @@ class User extends Authenticatable implements HasTenants, HasAvatar
             $this->save();
         }
     }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($user) {
+            $user->teams()->detach();
+            // Add any other relationships that need to be handled here
+            $user->audits()->delete();
+            $user->phoneQCs()->delete();
+        });
+    }
+
+    public function audits()
+    {
+        return $this->hasMany(Audit::class);
+    }
+
+    public function phoneQCs()
+    {
+        return $this->hasMany(PhoneQC::class);
+    }
 }
