@@ -88,7 +88,7 @@ class Register extends BaseRegister
         $user = $this->getUserModel()::create([
             'name' => $data['name'],
             'email' => $data['email'],
-            'password' => bcrypt($data['password']),
+            'password' => $data['password'],
             'user_role' => $data['user_role'],
             'user_lob' => $data['team'] == $trueSourceTeam->id ? $data['user_lob'] : null,
             // Set permissions for Associate role
