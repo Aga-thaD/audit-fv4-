@@ -59,6 +59,7 @@ class Register extends BaseRegister
     {
         return Select::make('user_lob')
             ->label('LOB')
+            ->multiple()
             ->options([
                 'CALL ENTERING' => 'CALL ENTERING',
                 'ERG FOLLOW-UP' => 'ERG FOLLOW-UP',
