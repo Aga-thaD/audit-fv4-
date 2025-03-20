@@ -12,6 +12,7 @@ class Audit extends Model
 
     protected $fillable = [
         'user_id',
+        'team_id',
         'lob',
         'aud_auditor',
         'aud_date',
@@ -34,6 +35,18 @@ class Audit extends Model
         'aud_dispute_timestamp',
         'aud_acknowledge_timestamp',
 
+        // Cintas AR specific fields
+        'eo_number',
+        'ar_name',
+        'invoice_date',
+        'document_number',
+        'country',
+        'amount',
+        'reference',
+        'pass_fail',
+        'type_of_error',
+        'description_of_error',
+        'comments',
     ];
 
     /**

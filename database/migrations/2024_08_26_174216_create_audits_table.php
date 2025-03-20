@@ -36,6 +36,20 @@ return new class extends Migration
             $table->string('aud_associate_screenshot')->nullable();
             $table->timestamp('aud_dispute_timestamp')->nullable();
             $table->timestamp('aud_acknowledge_timestamp')->nullable();
+
+            // Cintas AR specific fields
+            $table->string('eo_number')->nullable();
+            $table->string('ar_name')->nullable();
+            $table->date('invoice_date')->nullable();
+            $table->string('document_number')->nullable();
+            $table->string('country')->nullable();
+            $table->decimal('amount', 10, 2)->nullable();
+            $table->string('reference')->nullable();
+            $table->string('pass_fail')->nullable();
+            $table->string('type_of_error')->nullable();
+            $table->string('description_of_error')->nullable();
+            $table->text('comments')->nullable();
+
             $table->timestamps();
         });
     }
