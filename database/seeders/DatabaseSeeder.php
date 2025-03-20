@@ -37,6 +37,39 @@ class DatabaseSeeder extends Seeder
             'MAJOR' => ['Incorrect document attached', 'Missed to upload paperwork', 'Missing Email', 'Missed/Incorrect address', 'Incorrect invoice number', 'Incorrect invoice date', 'Incorrect Type info'],
             'MINOR' => ['Duplicate attachment'],
         ],
+        'CINTAS ACCOUNTS RECEIVABLE' => [
+            'CRITICAL' => ['Incorrect Unit Price', 'Rudeness'],
+            'MAJOR' => ['Failed to follow R&R'],
+            'MINOR' => [
+                'Failed to follow correct MLA Pricing',
+                'Exceeded QTY Restrictions',
+                'Incorrect Total',
+                'Incorrect Subtotal',
+                'Incorrect Date',
+                'Incorrect INV Number',
+                'Incorrect Tax Code',
+                'Incorrect item quantities in VA01',
+                'Incorrect SGST',
+                'Incorrect Tax Amount',
+                'Industrial Management (Incorrect %)',
+                'Invoice doesn\'t match VA01',
+                'Overpaid Invoice',
+                'No \'REF PO\' keyed in FB60',
+                'No data entered in Reference column',
+                'Incorrect Service Charge',
+                'Paid to the wrong vendor',
+                'Incorrect Surcharge Amount',
+                'Missing Employees',
+                'Tax Not Included',
+                'Incorrect Document Number in Completed Invoice Copy',
+                'Others',
+                'Incorrect Pricing',
+                'Did not follow Minimum - Stop Charge',
+                'Incorrect Adjustment - did not match the R&R',
+                'Missing or Incorrect Details on Text Reference Key',
+                'Failed to Include Tax'
+            ],
+        ],
     ];
 
     public function run(): void
@@ -45,6 +78,7 @@ class DatabaseSeeder extends Seeder
         $teams = [
             ['name' => 'TrueSource', 'slug' => 'truesource-team'],
             ['name' => 'SOS', 'slug' => 'sos-team'],
+            ['name' => 'Cintas AR', 'slug' => 'cintas-ar-team'],
         ];
 
         foreach ($teams as $teamData) {
@@ -62,7 +96,7 @@ class DatabaseSeeder extends Seeder
                 'audit_create' => true, 'audit_view' => true, 'audit_update' => true, 'audit_delete' => true,
                 'pqc_create' => true, 'pqc_view' => true, 'pqc_update' => true, 'pqc_delete' => true,
                 'user_create' => true, 'user_view' => true, 'user_update' => true, 'user_delete' => true,
-                'teams' => ['TrueSource', 'SOS']
+                'teams' => ['TrueSource', 'SOS', 'Cintas AR']
             ],
             [
                 'name' => 'Diona Ramos',
@@ -130,6 +164,29 @@ class DatabaseSeeder extends Seeder
                 'user_create' => false, 'user_view' => false, 'user_update' => false, 'user_delete' => false,
                 'teams' => ['SOS']
             ],
+            // Adding new users for Cintas AR team with the specific LOB
+            [
+                'name' => 'Sarah Johnson',
+                'email' => 'sarah.johnson@teamspan.com',
+                'password' => Hash::make('password'),
+                'user_role' => 'Manager',
+                'user_lob' => ['CINTAS ACCOUNTS RECEIVABLE'],
+                'audit_create' => true, 'audit_view' => true, 'audit_update' => true, 'audit_delete' => true,
+                'pqc_create' => true, 'pqc_view' => true, 'pqc_update' => true, 'pqc_delete' => true,
+                'user_create' => true, 'user_view' => true, 'user_update' => true, 'user_delete' => true,
+                'teams' => ['Cintas AR']
+            ],
+            [
+                'name' => 'Michael Chen',
+                'email' => 'michael.chen@teamspan.com',
+                'password' => Hash::make('password'),
+                'user_role' => 'Associate',
+                'user_lob' => ['CINTAS ACCOUNTS RECEIVABLE'],
+                'audit_create' => false, 'audit_view' => true, 'audit_update' => true, 'audit_delete' => false,
+                'pqc_create' => false, 'pqc_view' => true, 'pqc_update' => true, 'pqc_delete' => false,
+                'user_create' => false, 'user_view' => false, 'user_update' => false, 'user_delete' => false,
+                'teams' => ['Cintas AR']
+            ],
         ];
 
         foreach ($users as $userData) {
@@ -155,9 +212,14 @@ class DatabaseSeeder extends Seeder
             $query->where('name', 'SOS');
         })->get()->groupBy('user_role');
 
+        $cintasUsers = User::whereHas('teams', function ($query) {
+            $query->where('name', 'Cintas AR');
+        })->get()->groupBy('user_role');
+
         // Seed audits
         $this->seedAuditsForTeam($trueSourceUsers, 'TrueSource');
         $this->seedAuditsForTeam($sosUsers, 'SOS');
+        $this->seedAuditsForTeam($cintasUsers, 'Cintas AR');
     }
 
     private function seedAuditsForTeam($teamUsers, $teamName)
@@ -176,7 +238,14 @@ class DatabaseSeeder extends Seeder
             $auditor = $auditors->random();
             $lob = $user->user_lob[array_rand($user->user_lob)];
             $errorCategory = ['CRITICAL', 'MAJOR', 'MINOR'][array_rand(['CRITICAL', 'MAJOR', 'MINOR'])];
-            $errorTypes = $this->errorTypes[$lob][$errorCategory];
+            $errorTypes = $this->errorTypes[$lob][$errorCategory] ?? [];
+
+            if (empty($errorTypes)) {
+                // If no error types for this category, default to MINOR
+                $errorCategory = 'MINOR';
+                $errorTypes = $this->errorTypes[$lob][$errorCategory] ?? ['General error'];
+            }
+
             $errorType = $errorTypes[array_rand($errorTypes)];
 
             Audit::create([
