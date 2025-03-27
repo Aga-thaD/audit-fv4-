@@ -266,6 +266,19 @@ class DatabaseSeeder extends Seeder
                 'user_create' => true, 'user_view' => true, 'user_update' => true, 'user_delete' => true,
                 'teams' => ['Cintas AR']
             ],
+
+            [
+                'name' => 'Lucille Rosales',
+                'email' => 'lucilita.rosales@teamspan.com',
+                'password' => Hash::make('password'),
+                'user_role' => 'Manager',
+                'user_lob' => ['CINTAS ACCOUNTS RECEIVABLE'],
+                'audit_create' => true, 'audit_view' => true, 'audit_update' => true, 'audit_delete' => true,
+                'pqc_create' => true, 'pqc_view' => true, 'pqc_update' => true, 'pqc_delete' => true,
+                'user_create' => true, 'user_view' => true, 'user_update' => true, 'user_delete' => true,
+                'teams' => ['Cintas AR']
+            ],
+
             [
                 'name' => 'Michael Chen',
                 'email' => 'michael.chen@teamspan.com',
