@@ -9,6 +9,7 @@ use App\Mail\AuditMail;
 use App\Models\Audit;
 use App\Models\User;
 use Carbon\Carbon;
+use Filament\Actions\Exports\Exporter;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\Grid;
@@ -19,6 +20,7 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
@@ -504,7 +506,7 @@ class AuditResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
-                    ExportBulkAction::make(),
+                    ExportAction::make(),
                 ]),
             ])
             ->modifyQueryUsing(function (Builder $query) {
