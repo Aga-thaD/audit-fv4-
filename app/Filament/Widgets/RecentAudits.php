@@ -13,6 +13,16 @@ use Illuminate\Support\Facades\Auth;
 class RecentAudits extends BaseWidget
 {
     protected static ?int $sort = 4;
+    
+    public function mount()
+    {
+        $user = Auth::user();
+        $userTeams = $user->teams->pluck('slug')->toArray();
+        
+        $this->columnSpan = (in_array('sos-team', $userTeams) || in_array('cintas-ar-team', $userTeams)) 
+            ? 'full' 
+            : 'default';
+    }
 
     public function table(Table $table): Table
     {

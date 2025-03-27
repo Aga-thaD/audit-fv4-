@@ -31,7 +31,7 @@ class StatsOverview1stRow extends BaseWidget
 
         if (empty($userTeams)) {
             Log::warning('User has no teams', ['user_id' => $user->id]);
-            return $this->getAllStats($userQuery, $auditQuery, $phoneQCQuery);
+            return $this->getAllStats($userQuery, $auditQuery);
         }
 
         if (in_array('truesource-team', $userTeams) && !in_array('sos-team', $userTeams)) {
@@ -39,13 +39,13 @@ class StatsOverview1stRow extends BaseWidget
         }
 
         if (!in_array('truesource-team', $userTeams) && in_array('sos-team', $userTeams)) {
-            return $this->getSOSStats($userQuery, $auditQuery, $phoneQCQuery);
+            return $this->getSOSStats($userQuery, $auditQuery);
         }
 
-        return $this->getAllStats($userQuery, $auditQuery, $phoneQCQuery);
+        return $this->getAllStats($userQuery, $auditQuery);
     }
 
-    private function getAllStats($userQuery, $auditQuery, $phoneQCQuery): array
+    private function getAllStats($userQuery, $auditQuery): array
     {
         return [
             Stat::make('Total Users', $userQuery->count())
@@ -54,8 +54,6 @@ class StatsOverview1stRow extends BaseWidget
                 ->icon('heroicon-o-user'),
             Stat::make('Total Audits', $auditQuery->count())
                 ->icon('heroicon-o-document-magnifying-glass'),
-            Stat::make('Total Phone QCs', $phoneQCQuery->count())
-                ->icon('heroicon-o-phone'),
         ];
     }
 
@@ -87,13 +85,13 @@ class StatsOverview1stRow extends BaseWidget
         ];
     }
 
-    private function getSOSStats($userQuery, $auditQuery, $phoneQCQuery): array
+    private function getSOSStats($userQuery, $auditQuery): array
     {
         $sosTeam = Team::where('slug', 'sos-team')->first();
 
         if (!$sosTeam) {
             Log::error('SOS team not found');
-            return $this->getAllStats($userQuery, $auditQuery, $phoneQCQuery);
+            return $this->getAllStats($userQuery, $auditQuery);
         }
 
         $sosUserIds = $sosTeam->members()->pluck('users.id')->toArray();
@@ -110,8 +108,8 @@ class StatsOverview1stRow extends BaseWidget
                 ->icon('heroicon-o-user'),
             Stat::make('SOS Audits', $auditQuery->whereIn('user_id', $sosUserIds)->count())
                 ->icon('heroicon-o-document-magnifying-glass'),
-            Stat::make('SOS Phone QCs', $phoneQCQuery->whereIn('user_id', $sosUserIds)->count())
-                ->icon('heroicon-o-phone'),
+           /* Stat::make('SOS Phone QCs', $phoneQCQuery->whereIn('user_id', $sosUserIds)->count())
+                ->icon('heroicon-o-phone'), */
         ];
     }
 }
