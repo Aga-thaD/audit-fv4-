@@ -12,6 +12,22 @@ use Illuminate\Support\Facades\Auth;
 
 class RecentPhoneQCs extends BaseWidget
 {
+
+    public static function canView(): bool
+    {
+        $user = Auth::user();
+        $userTeams = $user->teams->pluck('slug')->toArray();
+
+        // Hide the resource if the user is only in the SOS team
+        if (in_array('sos-team', $userTeams) || in_array('cintas-ar-team', $userTeams)) {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
+
     protected static ?string $heading = 'Recent Phone QCs';
 
     protected static ?int $sort = 4;
