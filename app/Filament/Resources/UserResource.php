@@ -145,6 +145,20 @@ class UserResource extends Resource
                                 }
                             })
                             ->multiple(),
+
+                        Forms\Components\TextInput::make('eo_number')->label('EO NUMBER')
+                        ->visible(function () {
+                            $user = Auth::user();
+                            $isCintasTeam = $user->teams->contains('slug', 'cintas-ar-team');
+                            if($isCintasTeam)
+                            {
+                                return true;
+                            }
+                            else
+                            {
+                                return false;
+                            }
+                        })
                     ]),
                 Forms\Components\Section::make('Permissions')
                     ->schema([

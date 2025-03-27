@@ -112,7 +112,11 @@ class AuditResource extends Resource
                                     })
                                     ->reactive()
                                     ->searchable()
-                                    ->preload(),
+                                    ->preload()
+                                    ->afterStateUpdated(function ($state, $set) {
+                                        $user_info = User::find($state);
+                                        $set('eo_number', $user_info->eo_number);
+                                    }),
                                 Forms\Components\TextInput::make('aud_auditor')
                                     ->required()
                                     ->label('Auditor')
