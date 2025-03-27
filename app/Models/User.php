@@ -30,6 +30,7 @@ class User extends Authenticatable implements HasTenants, HasAvatar
         'password',
         'user_role',
         'user_lob',
+        'eo_number',
 
         //Permissions
         'audit_create',
