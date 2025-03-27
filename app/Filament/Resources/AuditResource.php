@@ -153,8 +153,10 @@ class AuditResource extends Resource
                                     ->label('Document Number')
                                     ->required()
                                     ->visible(fn (callable $get) => $get('lob') === 'CINTAS ACCOUNTS RECEIVABLE'),
-                                Forms\Components\TextInput::make('country')
+                                Forms\Components\Select::make('country')
                                     ->label('Country')
+                                    ->options([
+                                        'CAN' => 'CAN', 'USA' => 'USA'])
                                     ->required()
                                     ->visible(fn (callable $get) => $get('lob') === 'CINTAS ACCOUNTS RECEIVABLE'),
                                 Forms\Components\TextInput::make('amount')
@@ -274,7 +276,6 @@ class AuditResource extends Resource
                                 Forms\Components\Select::make('type_of_error')
                                     ->label('Type of Error')
                                     ->options([
-                                        'CRITICAL' => 'CRITICAL',
                                         'MAJOR' => 'MAJOR',
                                         'MINOR' => 'MINOR',
                                     ])
@@ -789,14 +790,14 @@ class AuditResource extends Resource
                 ],
             ],
             'CINTAS ACCOUNTS RECEIVABLE' => [
-                'CRITICAL' => [
-                    'Incorrect Unit Price' => 'Incorrect Unit Price',
-                    'Rudeness' => 'Rudeness',
-                ],
                 'MAJOR' => [
                     'Failed to follow R&R' => 'Failed to follow R&R',
                 ],
                 'MINOR' => [
+                    'Did not follow Minimum - Stop Charge' => 'Did not follow Minimum - Stop Charge',
+                    'Incorrect Adjustment - did not match the R&R' => 'Incorrect Adjustment - did not match the R&R',
+                    'Missing or Incorrect Details on Text Reference Key' => 'Missing or Incorrect Details on Text Reference Key',
+                    'Failed to Include Tax' => 'Failed to Include Tax',
                     'Failed to follow correct MLA Pricing' => 'Failed to follow correct MLA Pricing',
                     'Exceeded QTY Restrictions' => 'Exceeded QTY Restrictions',
                     'Incorrect Total' => 'Incorrect Total',
@@ -805,12 +806,12 @@ class AuditResource extends Resource
                     'Incorrect INV Number' => 'Incorrect INV Number',
                     'Incorrect Tax Code' => 'Incorrect Tax Code',
                     'Incorrect item quantities in VA01' => 'Incorrect item quantities in VA01',
-                    'Incorrect SGST' => 'Incorrect SGST',
+                    'Incorrect Short Pay' => 'Incorrect Short Pay',
                     'Incorrect Tax Amount' => 'Incorrect Tax Amount',
                     'Industrial Management (Incorrect %)' => 'Industrial Management (Incorrect %)',
                     'Invoice doesn\'t match VA01' => 'Invoice doesn\'t match VA01',
                     'Overpaid Invoice' => 'Overpaid Invoice',
-                    'No \'REF PO\' keyed in FB60' => 'No \'REF PO\' keyed in FB60',
+                    'No "REF KEY 3" keyed in FB60' => 'No "REF KEY 3" keyed in FB60',
                     'No data entered in Reference column' => 'No data entered in Reference column',
                     'Incorrect Service Charge' => 'Incorrect Service Charge',
                     'Paid to the wrong vendor' => 'Paid to the wrong vendor',
@@ -819,11 +820,6 @@ class AuditResource extends Resource
                     'Tax Not Included' => 'Tax Not Included',
                     'Incorrect Document Number in Completed Invoice Copy' => 'Incorrect Document Number in Completed Invoice Copy',
                     'Others' => 'Others',
-                    'Incorrect Pricing' => 'Incorrect Pricing',
-                    'Did not follow Minimum - Stop Charge' => 'Did not follow Minimum - Stop Charge',
-                    'Incorrect Adjustment - did not match the R&R' => 'Incorrect Adjustment - did not match the R&R',
-                    'Missing or Incorrect Details on Text Reference Key' => 'Missing or Incorrect Details on Text Reference Key',
-                    'Failed to Include Tax' => 'Failed to Include Tax',
                 ],
             ],
         ];
