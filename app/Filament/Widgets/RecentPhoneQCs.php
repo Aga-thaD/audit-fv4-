@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\Auth;
 
 class RecentPhoneQCs extends BaseWidget
 {
+    protected int | string | array $columnSpan = 'full';
 
     public static function canView(): bool
     {
