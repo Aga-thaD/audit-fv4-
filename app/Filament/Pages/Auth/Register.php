@@ -50,7 +50,7 @@ class Register extends BaseRegister
     {
         return Select::make('team')
             ->label('Team')
-            ->options(Team::pluck('name', 'id'))
+            ->options(['1' => 'TrueSource', '2' => 'SOS'])
             ->required()
             ->reactive();
     }
