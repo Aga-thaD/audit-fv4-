@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Exports\AuditExporter;
 use App\Filament\Resources\AuditResource\Pages;
 use App\Filament\Resources\AuditResource\RelationManagers;
+use App\Mail\AuditMail;
 use App\Models\Audit;
 use App\Models\User;
 use Carbon\Carbon;
@@ -23,6 +24,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class AuditResource extends Resource
 {
@@ -443,20 +445,41 @@ class AuditResource extends Resource
                         ),
                     Tables\Actions\Action::make('Acknowledge')
                         ->label('Acknowledge')
-                        ->icon('heroicon-o-check-circle')
+                        ->icon('heroicon-o-check-circle')   
                         ->color('success')
                         ->action(function (Audit $record) {
+                            $recipients = User::whereIn('user_role', ['Auditor', 'Manager'])
+                            ->whereJsonContains('user_lob', $record->lob)
+                            ->whereHas('teams', function ($query) {
+                                $query->where('teams.id', auth()->user()->teams->pluck('id'));
+                            })
+                            ->get();
+                            $user_name = User::find($record->user_id)->name;
+                            foreach($recipients as $recipient) {
+                                $body = "Audit by " . $user_name . " has been acknowledged.";
+                                $title = "Audit Acknowledgement";
+                                Mail::to($recipient)
+                                ->send(new AuditMail($title, $body));
+                            }
                             $record->update([
                                 'aud_status' => 'Acknowledged',
                                 'aud_acknowledge_timestamp' => now(),
                             ]);
                         })
                         ->requiresConfirmation()
-                        ->visible(fn (Audit $record) =>
-                            in_array(Auth::user()->user_role, ['Auditor', 'Associate']) &&
-                            $record->aud_status === 'Pending' &&
-                            (Auth::user()->user_role === 'Associate' ? Auth::id() === $record->user_id : true)
-                        ),
+                        ->visible(function (Audit $record) {
+                            if($record->aud_status === 'Pending')
+                            {
+                                if(Auth::user()->id === $record->user_id)
+                                {
+                                    return true;
+                                }
+                                else
+                                {
+                                    return false;
+                                }
+                            }
+                        }),
                     Tables\Actions\Action::make('Mark as Pending')
                         ->label('Mark as Pending')
                         ->icon('heroicon-o-arrow-path')
