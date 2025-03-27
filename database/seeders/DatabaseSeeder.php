@@ -110,17 +110,19 @@ class DatabaseSeeder extends Seeder
                 'user_create' => true, 'user_view' => true, 'user_update' => true, 'user_delete' => true,
                 'teams' => ['TrueSource']
             ],
-            [
-                'name' => 'Renzo Miranda',
-                'email' => 'renzo.miranda@teamspan.com',
-                'password' => Hash::make('password'),
-                'user_role' => 'Manager',
-                'user_lob' => ['CUSTOMER SERVICE REP', 'ACCOUNTS RECEIVABLE/PAYABLE'],
-                'audit_create' => true, 'audit_view' => true, 'audit_update' => true, 'audit_delete' => true,
-                'pqc_create' => true, 'pqc_view' => true, 'pqc_update' => true, 'pqc_delete' => true,
-                'user_create' => true, 'user_view' => true, 'user_update' => true, 'user_delete' => true,
-                'teams' => ['SOS']
+            [                
+            'name' => 'Renzo Miranda',
+            'email' => 'renzo.miranda@teamspan.com',
+            'password' => Hash::make('password'),
+            'user_role' => 'Manager',
+            'user_lob' => ['CUSTOMER SERVICE REP', 'ACCOUNTS RECEIVABLE/PAYABLE', 'CALL ENTERING', 'ERG FOLLOW-UP', 
+                            'DOCUMENT PROCESSING', 'CINTAS ACCOUNTS RECEIVABLE'],
+            'audit_create' => true, 'audit_view' => true, 'audit_update' => true, 'audit_delete' => true,
+            'pqc_create' => true, 'pqc_view' => true, 'pqc_update' => true, 'pqc_delete' => true,
+            'user_create' => true, 'user_view' => true, 'user_update' => true, 'user_delete' => true,
+            'teams' => ['SOS', 'TrueSource', 'Cintas AR']
             ],
+            
             [
                 'name' => 'Mark Loredo',
                 'email' => 'mark.loredo@teamspan.com',
