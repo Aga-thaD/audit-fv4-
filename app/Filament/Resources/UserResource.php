@@ -116,12 +116,14 @@ class UserResource extends Resource
                                 }
                             })
                             ->native(false),
-                        Forms\Components\Select::make('user_lob')->label('LOB')
+                            Forms\Components\Select::make('user_lob')->label('LOB')
                             ->options(function () {
                                 $user = Auth::user();
                                 $isSOSTeam = $user->teams->contains('slug', 'sos-team');
                                 $isTrueSourceTeam = $user->teams->contains('slug', 'truesource-team');
-
+                                $isCintasTeam = $user->teams->contains('slug', 'cintas-ar-team');
+                        
+                        
                                 if ($isSOSTeam) {
                                     return [
                                         'CUSTOMER SERVICE REP' => 'CUSTOMER SERVICE REP',
@@ -133,14 +135,19 @@ class UserResource extends Resource
                                         'ERG FOLLOW-UP' => 'ERG FOLLOW-UP',
                                         'DOCUMENT PROCESSING' => 'DOCUMENT PROCESSING',
                                     ];
+                                } elseif ($isCintasTeam) {
+                                    return [
+                                        'CINTAS ACCOUNTS RECEIVABLE' => 'CINTAS ACCOUNTS RECEIVABLE',
+                                    ];
                                 } else {
-                                    // For users not in SOS or TrueSource teams, or for admins
+                                    // For users not in any specific team
                                     return [
                                         'CALL ENTERING' => 'CALL ENTERING',
                                         'ERG FOLLOW-UP' => 'ERG FOLLOW-UP',
                                         'DOCUMENT PROCESSING' => 'DOCUMENT PROCESSING',
                                         'CUSTOMER SERVICE REP' => 'CUSTOMER SERVICE REP',
                                         'ACCOUNTS RECEIVABLE/PAYABLE' => 'ACCOUNTS RECEIVABLE/PAYABLE',
+                                        'CINTAS ACCOUNTS RECEIVABLE' => 'CINTAS ACCOUNTS RECEIVABLE',
                                     ];
                                 }
                             })
