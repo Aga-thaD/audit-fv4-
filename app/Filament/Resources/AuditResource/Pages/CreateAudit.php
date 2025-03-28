@@ -29,9 +29,15 @@ class CreateAudit extends CreateRecord
                 $manager_email = auth()->user()->email;
                 $ar_info = $this->record->user_id;
                 $ar_email = User::find($ar_info);
-
-                $body = "Audit with EO Number - " . $this->record->eo_number . " by " . $ar_email->name . "'s is tagged as FAILED.";
-                $title = "Audit Fail - " . $this->record->eo_number;
+              
+                $body = "Below are the audit details." . "<br><br><br>" . "<strong>LOB</strong> - " . $this->record->lob .  " <br><br> " . "<strong>Name: </strong>" . $ar_email->name . "<br><br>" . 
+                        "<strong>Auditor: </strong>" . $this->record->aud_auditor . "<br><br>" . "<strong>Audit Date: </strong>" . $this->record->aud_date . 
+                        "<br><br>" . "<strong>EO Number: </strong>" . $this->record->eo_number . "<br><br>" . "<strong>Reference: </strong>" . $this->record->reference . 
+                        "<br><br>" . "<strong>Pass/Fail: </strong> " . $this->record->pass_fail . "<br><br>" . "<strong>Type of Error: </strong>" . 
+                        $this->record->type_of_error . "<br><br>" . "<strong>Description of Error: </strong>" . $this->record->description_of_error . 
+                        "<br><br><br>" . "<strong>Status: </strong>" . $this->record->aud_status;
+                        
+                $title = "Audit Details";
 
             Mail::to($manager_email)
                 ->send(new AuditMail($title, $body));
