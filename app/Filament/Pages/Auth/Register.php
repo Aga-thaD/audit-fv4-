@@ -110,7 +110,7 @@ class Register extends BaseRegister
             'email' => $data['email'],
             'password' => $data['password'],
             'user_role' => $data['user_role'],
-            'user_lob' => $data['team'] == $trueSourceTeam->id ? $data['user_lob'] : null,
+            'user_lob' => $data['user_lob'],
             // Set permissions for Associate role
             'audit_create' => false,
             'audit_view' => true,
