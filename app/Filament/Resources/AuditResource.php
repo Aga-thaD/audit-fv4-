@@ -48,6 +48,7 @@ class AuditResource extends Resource
                                 Forms\Components\Select::make('lob')
                                     ->required()
                                     ->label('LOB')
+                                    ->columnSpanFull()
                                     ->options(function () {
                                         $user = Auth::user();
                                         $isSOSTeam = $user->teams->contains('slug', 'sos-team');
@@ -137,10 +138,6 @@ class AuditResource extends Resource
                                 // Cintas AR specific fields
                                 Forms\Components\TextInput::make('eo_number')
                                     ->label('EO Number')
-                                    ->required()
-                                    ->visible(fn (callable $get) => $get('lob') === 'CINTAS ACCOUNTS RECEIVABLE'),
-                                Forms\Components\TextInput::make('ar_name')
-                                    ->label('AR Name')
                                     ->required()
                                     ->visible(fn (callable $get) => $get('lob') === 'CINTAS ACCOUNTS RECEIVABLE'),
                                 Forms\Components\DatePicker::make('invoice_date')
