@@ -10,6 +10,7 @@ use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Get;
 use Filament\Http\Responses\Auth\RegistrationResponse;
 use Filament\Pages\Page;
 use Filament\Pages\Auth\Register as BaseRegister;
@@ -60,18 +61,36 @@ class Register extends BaseRegister
         return Select::make('user_lob')
             ->label('LOB')
             ->multiple()
-            ->options([
-                'CALL ENTERING' => 'CALL ENTERING',
-                'ERG FOLLOW-UP' => 'ERG FOLLOW-UP',
-                'DOCUMENT PROCESSING' => 'DOCUMENT PROCESSING',
-            ])
+            ->preload()
+            ->options(function (Get $get) {
+                $options = null;
+                if($get('team') !== null) {
+                   if($get('team') === '1') {
+                    $options = [
+                        'CALL ENTERING' => 'CALL ENTERING',
+                        'ERG FOLLOW-UP' => 'ERG FOLLOW-UP',
+                        'DOCUMENT PROCESSING' => 'DOCUMENT PROCESSING',
+                    ];
+                   }
+                   elseif($get('team') === '2') {
+                    $options = [
+                        'CUSTOMER SERVICE REP' => 'CUSTOMER SERVICE REP',
+                        'ACCOUNTS RECEIVABLE/PAYABLE' => 'ACCOUNTS RECEIVABLE/PAYABLE',
+                    ];
+                   }
+                   elseif($get('team') === '3') {
+                    $options = [
+                        'CINTAS ACCOUNTS RECEIVABLE' => 'CINTAS ACCOUNTS RECEIVABLE',
+                    ];
+                   }
+
+                   return $options;
+                }
+                
+            })
+             
             ->native(false)
-            ->required()
-            ->visible(function (callable $get) {
-                $selectedTeamId = $get('team');
-                $trueSourceTeam = Team::where('name', 'TrueSource')->first();
-                return $selectedTeamId && $trueSourceTeam && $selectedTeamId == $trueSourceTeam->id;
-            });
+            ->required();
     }
 
     protected function getHiddenRoleComponent()
