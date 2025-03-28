@@ -100,94 +100,26 @@ class DatabaseSeeder extends Seeder
                 'teams' => ['TrueSource']
             ],
             [
-                'name' => 'Agatha Deladia',
-                'email' => 'agatha.deladia@teamspan.com',
-                'password' => Hash::make('password'),
-                'user_role' => 'Auditor',
-                'user_lob' => ['CALL ENTERING', 'ERG FOLLOW-UP', 'DOCUMENT PROCESSING'],
-                'audit_create' => true, 'audit_view' => true, 'audit_update' => true, 'audit_delete' => true,
-                'pqc_create' => true, 'pqc_view' => true, 'pqc_update' => true, 'pqc_delete' => true,
-                'user_create' => true, 'user_view' => true, 'user_update' => true, 'user_delete' => true,
-                'teams' => ['TrueSource']
-            ],
-            [                
-            'name' => 'Renzo Miranda',
-            'email' => 'renzo.miranda@teamspan.com',
-            'password' => Hash::make('password'),
-            'user_role' => 'Manager',
-            'user_lob' => ['CUSTOMER SERVICE REP', 'ACCOUNTS RECEIVABLE/PAYABLE', 'CALL ENTERING', 'ERG FOLLOW-UP', 
-                            'DOCUMENT PROCESSING', 'CINTAS ACCOUNTS RECEIVABLE'],
-            'audit_create' => true, 'audit_view' => true, 'audit_update' => true, 'audit_delete' => true,
-            'pqc_create' => true, 'pqc_view' => true, 'pqc_update' => true, 'pqc_delete' => true,
-            'user_create' => true, 'user_view' => true, 'user_update' => true, 'user_delete' => true,
-            'teams' => ['SOS', 'TrueSource', 'Cintas AR']
-            ],
-            
-            [
-                'name' => 'Mark Loredo',
-                'email' => 'mark.loredo@teamspan.com',
-                'password' => Hash::make('password'),
-                'user_role' => 'Auditor',
-                'user_lob' => ['CUSTOMER SERVICE REP', 'ACCOUNTS RECEIVABLE/PAYABLE'],
-                'audit_create' => true, 'audit_view' => true, 'audit_update' => true, 'audit_delete' => true,
-                'pqc_create' => true, 'pqc_view' => true, 'pqc_update' => true, 'pqc_delete' => true,
-                'user_create' => true, 'user_view' => true, 'user_update' => true, 'user_delete' => true,
-                'teams' => ['SOS']
-            ],
-            [
                 'name' => 'Aries Medina',
                 'email' => 'aries.medina@teamspan.com',
                 'password' => Hash::make('password'),
                 'user_role' => 'Manager',
-                'user_lob' => ['CALL ENTERING', 'ERG FOLLOW-UP', 'DOCUMENT PROCESSING', 'CUSTOMER SERVICE REP', 'ACCOUNTS RECEIVABLE/PAYABLE'],
+                'user_lob' => ['CINTAS ACCOUNTS RECEIVABLE'],
                 'audit_create' => true, 'audit_view' => true, 'audit_update' => true, 'audit_delete' => true,
                 'pqc_create' => true, 'pqc_view' => true, 'pqc_update' => true, 'pqc_delete' => true,
                 'user_create' => true, 'user_view' => true, 'user_update' => true, 'user_delete' => true,
                 'teams' => ['Cintas AR']
-            ],
-            [
-                'name' => 'Angela Hofilena',
-                'email' => 'angela.hofilena@teamspan.com',
-                'password' => Hash::make('password'),
-                'user_role' => 'Auditor',
-                'user_lob' => ['CALL ENTERING', 'ERG FOLLOW-UP', 'DOCUMENT PROCESSING', 'CUSTOMER SERVICE REP', 'ACCOUNTS RECEIVABLE/PAYABLE'],
-                'audit_create' => true, 'audit_view' => true, 'audit_update' => true, 'audit_delete' => true,
-                'pqc_create' => true, 'pqc_view' => true, 'pqc_update' => true, 'pqc_delete' => true,
-                'user_create' => true, 'user_view' => true, 'user_update' => true, 'user_delete' => true,
-                'teams' => ['Cintas AR']
-            ],
-            [
-                'name' => 'Joy Hofilena',
-                'email' => 'joy.hofilena@teamspan.com',
-                'password' => Hash::make('password'),
-                'user_role' => 'Auditor',
-                'user_lob' => ['CALL ENTERING', 'ERG FOLLOW-UP', 'DOCUMENT PROCESSING'],
-                'audit_create' => true, 'audit_view' => true, 'audit_update' => true, 'audit_delete' => true,
-                'pqc_create' => true, 'pqc_view' => true, 'pqc_update' => true, 'pqc_delete' => true,
-                'user_create' => true, 'user_view' => true, 'user_update' => true, 'user_delete' => true,
-                'teams' => ['TrueSource']
-            ],
-            [
-                'name' => 'Aaron Marquez 2',
-                'email' => 'ajsmarquez00@gmail.com',
-                'password' => Hash::make('password'),
-                'user_role' => 'Auditor',
-                'user_lob' => ['CUSTOMER SERVICE REP', 'ACCOUNTS RECEIVABLE/PAYABLE'],
-                'audit_create' => true, 'audit_view' => true, 'audit_update' => true, 'audit_delete' => true,
-                'pqc_create' => true, 'pqc_view' => true, 'pqc_update' => true, 'pqc_delete' => true,
-                'user_create' => true, 'user_view' => true, 'user_update' => true, 'user_delete' => true,
-                'teams' => ['SOS']
             ],
             [
                 'name' => 'Aaron Marquez 3',
                 'email' => 'hungrypusheen@gmail.com',
                 'password' => Hash::make('password'),
-                'user_role' => 'Auditor',
-                'user_lob' => ['CALL ENTERING', 'ERG FOLLOW-UP', 'DOCUMENT PROCESSING', 'CUSTOMER SERVICE REP', 'ACCOUNTS RECEIVABLE/PAYABLE'],
+                'user_role' => 'Manager',
+                'user_lob' => ['CUSTOMER SERVICE REP', 'ACCOUNTS RECEIVABLE/PAYABLE'],
                 'audit_create' => true, 'audit_view' => true, 'audit_update' => true, 'audit_delete' => true,
                 'pqc_create' => true, 'pqc_view' => true, 'pqc_update' => true, 'pqc_delete' => true,
                 'user_create' => true, 'user_view' => true, 'user_update' => true, 'user_delete' => true,
-                'teams' => ['Cintas AR']
+                'teams' => ['SOS']
             ],
 
             [
