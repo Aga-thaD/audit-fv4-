@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Filament\Actions\Exports\Exporter;
 use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Get;
 use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Infolists\Components\Section;
@@ -41,65 +42,66 @@ class AuditResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\Select::make('lob')
+                ->required()
+                ->label('LOB')
+                ->columnSpanFull()
+                ->options(function () {
+                    $user = Auth::user();
+                    $isSOSTeam = $user->teams->contains('slug', 'sos-team');
+                    $isTrueSourceTeam = $user->teams->contains('slug', 'truesource-team');
+                    $isCintasARTeam = $user->teams->contains('slug', 'cintas-ar-team');
+
+                    $options = [];
+
+                    if ($user->user_role === 'Admin') {
+                        $options = [
+                            'CALL ENTERING' => 'CALL ENTERING',
+                            'ERG FOLLOW-UP' => 'ERG FOLLOW-UP',
+                            'DOCUMENT PROCESSING' => 'DOCUMENT PROCESSING',
+                            'CUSTOMER SERVICE REP' => 'CUSTOMER SERVICE REP',
+                            'ACCOUNTS RECEIVABLE/PAYABLE' => 'ACCOUNTS RECEIVABLE/PAYABLE',
+                            'CINTAS ACCOUNTS RECEIVABLE' => 'CINTAS ACCOUNTS RECEIVABLE',
+                        ];
+                    } elseif ($isSOSTeam && $isTrueSourceTeam) {
+                        $options = [
+                            'CALL ENTERING' => 'CALL ENTERING',
+                            'ERG FOLLOW-UP' => 'ERG FOLLOW-UP',
+                            'DOCUMENT PROCESSING' => 'DOCUMENT PROCESSING',
+                            'CUSTOMER SERVICE REP' => 'CUSTOMER SERVICE REP',
+                            'ACCOUNTS RECEIVABLE/PAYABLE' => 'ACCOUNTS RECEIVABLE/PAYABLE',
+                        ];
+                    } elseif ($isSOSTeam) {
+                        $options = [
+                            'CUSTOMER SERVICE REP' => 'CUSTOMER SERVICE REP',
+                            'ACCOUNTS RECEIVABLE/PAYABLE' => 'ACCOUNTS RECEIVABLE/PAYABLE',
+                        ];
+                    } elseif ($isTrueSourceTeam) {
+                        $options = [
+                            'CALL ENTERING' => 'CALL ENTERING',
+                            'ERG FOLLOW-UP' => 'ERG FOLLOW-UP',
+                            'DOCUMENT PROCESSING' => 'DOCUMENT PROCESSING',
+                        ];
+                    } elseif ($isCintasARTeam) {
+                        $options = [
+                            'CINTAS ACCOUNTS RECEIVABLE' => 'CINTAS ACCOUNTS RECEIVABLE',
+                        ];
+                    }
+
+                    return $options;
+                })
+                ->reactive()
+                ->afterStateUpdated(function (callable $set) {
+                    $set('user_id', null);
+                    $set('aud_error_category', null);
+                    $set('aud_error_type', null);
+                })
+                ->required(),
                 Forms\Components\Section::make('Details')
                     ->schema([
                         Forms\Components\Grid::make()
                             ->schema([
-                                Forms\Components\Select::make('lob')
-                                    ->required()
-                                    ->label('LOB')
-                                    ->columnSpanFull()
-                                    ->options(function () {
-                                        $user = Auth::user();
-                                        $isSOSTeam = $user->teams->contains('slug', 'sos-team');
-                                        $isTrueSourceTeam = $user->teams->contains('slug', 'truesource-team');
-                                        $isCintasARTeam = $user->teams->contains('slug', 'cintas-ar-team');
-
-                                        $options = [];
-
-                                        if ($user->user_role === 'Admin') {
-                                            $options = [
-                                                'CALL ENTERING' => 'CALL ENTERING',
-                                                'ERG FOLLOW-UP' => 'ERG FOLLOW-UP',
-                                                'DOCUMENT PROCESSING' => 'DOCUMENT PROCESSING',
-                                                'CUSTOMER SERVICE REP' => 'CUSTOMER SERVICE REP',
-                                                'ACCOUNTS RECEIVABLE/PAYABLE' => 'ACCOUNTS RECEIVABLE/PAYABLE',
-                                                'CINTAS ACCOUNTS RECEIVABLE' => 'CINTAS ACCOUNTS RECEIVABLE',
-                                            ];
-                                        } elseif ($isSOSTeam && $isTrueSourceTeam) {
-                                            $options = [
-                                                'CALL ENTERING' => 'CALL ENTERING',
-                                                'ERG FOLLOW-UP' => 'ERG FOLLOW-UP',
-                                                'DOCUMENT PROCESSING' => 'DOCUMENT PROCESSING',
-                                                'CUSTOMER SERVICE REP' => 'CUSTOMER SERVICE REP',
-                                                'ACCOUNTS RECEIVABLE/PAYABLE' => 'ACCOUNTS RECEIVABLE/PAYABLE',
-                                            ];
-                                        } elseif ($isSOSTeam) {
-                                            $options = [
-                                                'CUSTOMER SERVICE REP' => 'CUSTOMER SERVICE REP',
-                                                'ACCOUNTS RECEIVABLE/PAYABLE' => 'ACCOUNTS RECEIVABLE/PAYABLE',
-                                            ];
-                                        } elseif ($isTrueSourceTeam) {
-                                            $options = [
-                                                'CALL ENTERING' => 'CALL ENTERING',
-                                                'ERG FOLLOW-UP' => 'ERG FOLLOW-UP',
-                                                'DOCUMENT PROCESSING' => 'DOCUMENT PROCESSING',
-                                            ];
-                                        } elseif ($isCintasARTeam) {
-                                            $options = [
-                                                'CINTAS ACCOUNTS RECEIVABLE' => 'CINTAS ACCOUNTS RECEIVABLE',
-                                            ];
-                                        }
-
-                                        return $options;
-                                    })
-                                    ->reactive()
-                                    ->afterStateUpdated(function (callable $set) {
-                                        $set('user_id', null);
-                                        $set('aud_error_category', null);
-                                        $set('aud_error_type', null);
-                                    })
-                                    ->required(),
+                            
                                 Forms\Components\Select::make('user_id')->label('Name')
                                     ->required()
                                     ->options(function (callable $get) {
@@ -335,7 +337,14 @@ class AuditResource extends Resource
                             ->visible(fn (callable $get) => $get('lob') === 'CINTAS ACCOUNTS RECEIVABLE'),
                         Forms\Components\Hidden::make('aud_status')
                             ->default('Pending'),
-                    ])
+                    ])->visible(function(Get $get) {
+                        if($get('lob') !== null) {
+                            return true;
+                        }
+                        else {
+                            return false;//
+                        }
+                    })
             ]);
     }
 
