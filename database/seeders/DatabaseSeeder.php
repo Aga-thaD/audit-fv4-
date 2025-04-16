@@ -89,8 +89,8 @@ class DatabaseSeeder extends Seeder
         $users = [
 
             [
-                'name' => 'Aaron Marquez',
-                'email' => 'aaron.marquez@teamspan.com',
+                'name' => 'dev',
+                'email' => 'dev.truesource@teamspan.com',
                 'password' => Hash::make('password'),
                 'user_role' => 'Manager',
                 'user_lob' => ['CALL ENTERING', 'ERG FOLLOW-UP', 'DOCUMENT PROCESSING'],
@@ -100,8 +100,8 @@ class DatabaseSeeder extends Seeder
                 'teams' => ['TrueSource']
             ],
             [
-                'name' => 'Aries Medina',
-                'email' => 'aries.medina@teamspan.com',
+                'name' => 'dev',
+                'email' => 'dev.cintasar@teamspan.com',
                 'password' => Hash::make('password'),
                 'user_role' => 'Manager',
                 'user_lob' => ['CINTAS ACCOUNTS RECEIVABLE'],
@@ -111,8 +111,8 @@ class DatabaseSeeder extends Seeder
                 'teams' => ['Cintas AR']
             ],
             [
-                'name' => 'Aaron Marquez 3',
-                'email' => 'hungrypusheen@gmail.com',
+                'name' => 'dev',
+                'email' => 'dev.sos@gmail.com',
                 'password' => Hash::make('password'),
                 'user_role' => 'Manager',
                 'user_lob' => ['CUSTOMER SERVICE REP', 'ACCOUNTS RECEIVABLE/PAYABLE'],
@@ -122,108 +122,6 @@ class DatabaseSeeder extends Seeder
                 'teams' => ['SOS']
             ],
 
-            [
-                'name' => 'Diona Ramos',
-                'email' => 'diona.ramos@teamspan.com',
-                'password' => Hash::make('password'),
-                'user_role' => 'Manager',
-                'user_lob' => ['CALL ENTERING', 'ERG FOLLOW-UP', 'DOCUMENT PROCESSING'],
-                'audit_create' => true, 'audit_view' => true, 'audit_update' => true, 'audit_delete' => true,
-                'pqc_create' => true, 'pqc_view' => true, 'pqc_update' => true, 'pqc_delete' => true,
-                'user_create' => true, 'user_view' => true, 'user_update' => true, 'user_delete' => true,
-                'teams' => ['TrueSource']
-            ],
-            [
-                'name' => 'Manilyn Lopez',
-                'email' => 'manilyn.lopez@teamspan.com',
-                'password' => Hash::make('password'),
-                'user_role' => 'Manager',
-                'user_lob' => ['CUSTOMER SERVICE REP', 'ACCOUNTS RECEIVABLE/PAYABLE'],
-                'audit_create' => true, 'audit_view' => true, 'audit_update' => true, 'audit_delete' => true,
-                'pqc_create' => true, 'pqc_view' => true, 'pqc_update' => true, 'pqc_delete' => true,
-                'user_create' => true, 'user_view' => true, 'user_update' => true, 'user_delete' => true,
-                'teams' => ['SOS']
-            ],
-            [
-                'name' => 'John Doe',
-                'email' => 'john.doe@teamspan.com',
-                'password' => Hash::make('password'),
-                'user_role' => 'Associate',
-                'user_lob' => ['CALL ENTERING'],
-                'audit_create' => false, 'audit_view' => true, 'audit_update' => true, 'audit_delete' => false,
-                'pqc_create' => false, 'pqc_view' => true, 'pqc_update' => true, 'pqc_delete' => false,
-                'user_create' => false, 'user_view' => false, 'user_update' => false, 'user_delete' => false,
-                'teams' => ['TrueSource']
-            ],
-            [
-                'name' => 'Juan Dela Cruz',
-                'email' => 'juan.delacruz@teamspan.com',
-                'password' => Hash::make('password'),
-                'user_role' => 'Associate',
-                'user_lob' => ['ERG FOLLOW-UP'],
-                'audit_create' => false, 'audit_view' => true, 'audit_update' => true, 'audit_delete' => false,
-                'pqc_create' => false, 'pqc_view' => true, 'pqc_update' => true, 'pqc_delete' => false,
-                'user_create' => false, 'user_view' => false, 'user_update' => false, 'user_delete' => false,
-                'teams' => ['TrueSource']
-            ],
-            [
-                'name' => 'Peyton Manning',
-                'email' => 'peyton.manning@teamspan.com',
-                'password' => Hash::make('password'),
-                'user_role' => 'Associate',
-                'user_lob' => ['DOCUMENT PROCESSING'],
-                'audit_create' => false, 'audit_view' => true, 'audit_update' => true, 'audit_delete' => false,
-                'pqc_create' => false, 'pqc_view' => true, 'pqc_update' => true, 'pqc_delete' => false,
-                'user_create' => false, 'user_view' => false, 'user_update' => false, 'user_delete' => false,
-                'teams' => ['TrueSource']
-            ],
-            [
-                'name' => 'Jane Doe',
-                'email' => 'jane.doe@teamspan.com',
-                'password' => Hash::make('password'),
-                'user_role' => 'Associate',
-                'user_lob' => ['CUSTOMER SERVICE REP'],
-                'audit_create' => false, 'audit_view' => true, 'audit_update' => true, 'audit_delete' => false,
-                'pqc_create' => false, 'pqc_view' => true, 'pqc_update' => true, 'pqc_delete' => false,
-                'user_create' => false, 'user_view' => false, 'user_update' => false, 'user_delete' => false,
-                'teams' => ['SOS']
-            ],
-            // Adding new users for Cintas AR team with the specific LOB
-            [
-                'name' => 'Sarah Johnson',
-                'email' => 'sarah.johnson@teamspan.com',
-                'password' => Hash::make('password'),
-                'user_role' => 'Manager',
-                'user_lob' => ['CINTAS ACCOUNTS RECEIVABLE'],
-                'audit_create' => true, 'audit_view' => true, 'audit_update' => true, 'audit_delete' => true,
-                'pqc_create' => true, 'pqc_view' => true, 'pqc_update' => true, 'pqc_delete' => true,
-                'user_create' => true, 'user_view' => true, 'user_update' => true, 'user_delete' => true,
-                'teams' => ['Cintas AR']
-            ],
-
-            [
-                'name' => 'Lucille Rosales',
-                'email' => 'lucilita.rosales@teamspan.com',
-                'password' => Hash::make('password'),
-                'user_role' => 'Manager',
-                'user_lob' => ['CINTAS ACCOUNTS RECEIVABLE'],
-                'audit_create' => true, 'audit_view' => true, 'audit_update' => true, 'audit_delete' => true,
-                'pqc_create' => true, 'pqc_view' => true, 'pqc_update' => true, 'pqc_delete' => true,
-                'user_create' => true, 'user_view' => true, 'user_update' => true, 'user_delete' => true,
-                'teams' => ['Cintas AR']
-            ],
-
-            [
-                'name' => 'Michael Chen',
-                'email' => 'michael.chen@teamspan.com',
-                'password' => Hash::make('password'),
-                'user_role' => 'Associate',
-                'user_lob' => ['CINTAS ACCOUNTS RECEIVABLE'],
-                'audit_create' => false, 'audit_view' => true, 'audit_update' => true, 'audit_delete' => false,
-                'pqc_create' => false, 'pqc_view' => true, 'pqc_update' => true, 'pqc_delete' => false,
-                'user_create' => false, 'user_view' => false, 'user_update' => false, 'user_delete' => false,
-                'teams' => ['Cintas AR']
-            ],
         ];
 
         foreach ($users as $userData) {
