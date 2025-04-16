@@ -13,7 +13,21 @@ class EditUser extends EditRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\DeleteAction::make(),
-        ];
-    }
+            Actions\DeleteAction::make()
+            ->visible(function ($record) {
+                $currentUser = auth()->user();
+                $targetUserRole = \App\Models\User::find($record->id)->user_role;
+            
+                if ($currentUser->user_role === 'Admin') {
+                    return true;
+                }
+            
+                if ($currentUser->user_role === 'Manager') {
+                    return $targetUserRole !== 'Manager';
+                }
+            
+                return false;
+            })            
+    ];
+}
 }
