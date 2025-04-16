@@ -27,8 +27,15 @@ class Team extends Model
         return $this->hasMany(PhoneQC::class);
     }
 
-    public function members(): BelongsToMany
+    // Rename from members() to users()
+    public function users(): BelongsToMany
     {
         return $this->belongsToMany(User::class);
+    }
+
+    // You can keep the members() method for backward compatibility if needed
+    public function members(): BelongsToMany
+    {
+        return $this->users();
     }
 }
