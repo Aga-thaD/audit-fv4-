@@ -261,7 +261,7 @@ class PhoneQCResource extends Resource
                                 ->required()
                                 ->maxLength(255),
                             Forms\Components\FileUpload::make('pqc_associate_screenshot')->label('Screenshot')
-                                ->maxFiles(3)
+                                ->maxFiles(5)
                                 ->multiple(),
                         ])
                         ->action(function (PhoneQC $record, array $data) {
@@ -271,6 +271,7 @@ class PhoneQCResource extends Resource
                                 'pqc_associate_screenshot' => $data['pqc_associate_screenshot'],
                                 'pqc_dispute_timestamp' => now(), // Add this line to set the dispute timestamp
                             ]);
+                            
                         })
                         ->requiresConfirmation()
                         ->visible(fn (PhoneQC $record) =>
