@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Exports\PhoneQCExporter;
 use App\Filament\Resources\PhoneQCResource\Pages;
 use App\Filament\Resources\PhoneQCResource\RelationManagers;
+use App\Mail\AuditMail;
 use App\Models\Audit;
 use App\Models\PhoneQC;
 use App\Models\User;
@@ -22,6 +23,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\HtmlString;
 
@@ -271,8 +273,40 @@ class PhoneQCResource extends Resource
                                 'pqc_associate_screenshot' => $data['pqc_associate_screenshot'],
                                 'pqc_dispute_timestamp' => now(), // Add this line to set the dispute timestamp
                             ]);
-                            
-                        })
+                            $auditorRecipients = User::whereIn('user_role', ['Auditor', 'Manager'])
+                            ->where('user_lob', $record->lob)
+                            ->whereHas('teams', function ($query) {
+                                $query->whereIn('teams.id', auth()->user()->teams->pluck('id'));
+                            })
+                            ->get();
+                    
+                                           // Fetch all Auditors and Managers for the same lob & team
+        $auditorRecipients = User::whereIn('user_role', ['Auditor', 'Manager'])
+        ->whereJsonContains('user_lob', $record->pqc_lob)
+        ->whereHas('teams', function ($query) {
+            $query->whereIn('teams.id', auth()->user()->teams->pluck('id'));
+        })
+        ->get();
+
+            // Fetch the associate (audited person)
+            $auditedUser = User::find($record->user_id);
+
+            $user_name = $auditedUser->name;
+            $subject = "Phone QC Disputed: " . $record->id;
+            $body = "A Phone QC record by " . $user_name . " has been disputed. <br/><br/> Feedback: " . $data['pqc_associate_feedback'];
+
+            // Send email to auditors and managers
+            foreach ($auditorRecipients as $recipient) {
+                Mail::to($recipient->email)
+                ->send(new AuditMail($subject, $body));
+                }
+
+            // Send email to the audited person
+            if ($auditedUser) {
+                Mail::to($auditedUser->email)
+                ->send(new AuditMail($subject, $body));
+                }
+            })
                         ->requiresConfirmation()
                         ->visible(fn (PhoneQC $record) =>
                             in_array(Auth::user()->user_role, ['Auditor', 'Associate']) &&
