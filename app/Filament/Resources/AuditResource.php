@@ -443,7 +443,8 @@ class AuditResource extends Resource
                                 ->required()
                                 ->maxLength(255),
                             Forms\Components\FileUpload::make('aud_associate_screenshot')->label('Screenshot')
-                                ->maxFiles(3),
+                                ->maxFiles(3)
+                                ->multiple(),
                         ])
                         ->action(function (Audit $record, array $data) {
                             $record->update([
