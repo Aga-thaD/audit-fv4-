@@ -261,7 +261,8 @@ class PhoneQCResource extends Resource
                                 ->required()
                                 ->maxLength(255),
                             Forms\Components\FileUpload::make('pqc_associate_screenshot')->label('Screenshot')
-                                ->maxFiles(3),
+                                ->maxFiles(3)
+                                ->multiple(),
                         ])
                         ->action(function (PhoneQC $record, array $data) {
                             $record->update([
