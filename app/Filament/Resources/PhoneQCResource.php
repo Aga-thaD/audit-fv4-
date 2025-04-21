@@ -288,25 +288,33 @@ class PhoneQCResource extends Resource
         })
         ->get();
 
-            // Fetch the associate (audited person)
-            $auditedUser = User::find($record->user_id);
+                   // Fetch all Auditors and Managers for the same lob & team
+        $auditorRecipients = User::whereIn('user_role', ['Auditor', 'Manager'])
+        ->whereJsonContains('user_lob', $record->lob)
+        ->whereHas('teams', function ($query) {
+            $query->whereIn('teams.id', auth()->user()->teams->pluck('id'));
+        })
+        ->get();
 
-            $user_name = $auditedUser->name;
-            $subject = "Phone QC Disputed: " . $record->id;
-            $body = "A Phone QC record by " . $user_name . " has been disputed. <br/><br/> Feedback: " . $data['pqc_associate_feedback'];
+    // Fetch the associate (audited person)
+    $auditedUser = User::find($record->user_id);
 
-            // Send email to auditors and managers
-            foreach ($auditorRecipients as $recipient) {
-                Mail::to($recipient->email)
-                ->send(new AuditMail($subject, $body));
-                }
+    $user_name = $auditedUser->name;
+    $subject = "Audit Disputed: " . $record->id;
+    $body = "An audit by " . $user_name . " has been disputed.\n\nFeedback: " . $data['aud_associate_feedback'];
 
-            // Send email to the audited person
-            if ($auditedUser) {
-                Mail::to($auditedUser->email)
-                ->send(new AuditMail($subject, $body));
-                }
-            })
+    // Send email to auditors and managers
+    foreach ($auditorRecipients as $recipient) {
+        Mail::to($recipient->email)
+            ->send(new AuditMail($subject, $body));
+    }
+
+    // Send email to the audited person
+    if ($auditedUser) {
+        Mail::to($auditedUser->email)
+            ->send(new AuditMail($subject, $body));
+    }
+})
                         ->requiresConfirmation()
                         ->visible(fn (PhoneQC $record) =>
                             in_array(Auth::user()->user_role, ['Auditor', 'Associate']) &&

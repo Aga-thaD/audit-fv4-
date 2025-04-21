@@ -49,4 +49,10 @@ class PhoneQC extends Model
     {
         return $this->belongsTo(Team::class);
     }
+
+    public function auditor(): BelongsTo
+    {
+    return $this->belongsTo(User::class, 'pqc_auditor');
+    }
+
 }
