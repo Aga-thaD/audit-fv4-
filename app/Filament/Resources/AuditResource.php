@@ -440,8 +440,7 @@ class AuditResource extends Resource
                         ->color('warning')
                         ->form([
                             Forms\Components\Textarea::make('aud_associate_feedback')->label('Reason for Dispute')
-                                ->required()
-                                ->maxLength(2000),
+                                ->required(),
                             Forms\Components\FileUpload::make('aud_associate_screenshot')->label('Screenshot')
                                 ->maxFiles(5)
                                 ->multiple(),
