@@ -21,6 +21,30 @@ class CreateAudit extends CreateRecord
 
     protected function getCreatedNotification(): ?Notification
     {
+        //sends email for audits with specific LOBS and error types
+        $lob = strtolower($this->record->lob);
+        $error = strtolower($this->record->aud_error_category ??'');
+
+        //sets lobs limitation
+        $validLobs = ['call entering', 'erg follow-up', 'document processing'];
+        $validErrors = ['critical', 'major', 'minor'];
+
+        if (in_array($lob, $validLobs)&&in_array($error, $validErrors)) {
+            $auditorEmail=auth()->user()->email;
+            $auditeeId=$this->record->user_id;
+            $auditee=\App\Models\User::find($auditeeId);
+
+            $title = "Audit Error Category";
+
+            $body = "An audit has been submitted and recorded. <br/><br/>".
+            "<strong>LOB:<strong/>{$this->record->lob}<br/>". 
+            "<strong>Error Category:<strong/>{$this->record->aud_error_category}<br/>". 
+            "<strong>Audited User:<strong/>{$auditee->name}<br/>".
+            "<strong>Created By:<strong/>". auth()->user()->name;
+
+            Mail::to([$auditorEmail, $auditee->email])
+            ->send(new AuditMail($title, $body));
+        }
 
         if($this->record->lob === "CINTAS ACCOUNTS RECEIVABLE") { 
             if($this->record->pass_fail === "Fail") 
@@ -30,10 +54,10 @@ class CreateAudit extends CreateRecord
                 $ar_info = $this->record->user_id;
                 $ar_email = User::find($ar_info);
               
-                $body = "Below are the audit details." . "<br><br><br>" . "<strong>LOB</strong> - " . $this->record->lob .  " <br><br> " . "<strong>Name: </strong>" . $ar_email->name . "<br><br>" . 
-                        "<strong>Auditor: </strong>" . $this->record->aud_auditor . "<br><br>" . "<strong>Audit Date: </strong>" . $this->record->aud_date . 
-                        "<br><br>" . "<strong>EO Number: </strong>" . $this->record->eo_number . "<br><br>" . "<strong>Reference: </strong>" . $this->record->reference . 
-                        "<br><br>" . "<strong>Pass/Fail: </strong> " . $this->record->pass_fail . "<br><br>" . "<strong>Type of Error: </strong>" . 
+                $body = "Below are the audit details." . "<br><br><br>" . "<strong>LOB</strong> - " . $this->record->lob .  " <br><br> " . "<strong>Name: </strong>" . 
+                        $ar_email->name . "<br><br>" . "<strong>Auditor: </strong>" . $this->record->aud_auditor . "<br><br>" . "<strong>Audit Date: </strong>" . 
+                        $this->record->aud_date . "<br><br>" . "<strong>EO Number: </strong>" . $this->record->eo_number . "<br><br>" . "<strong>Reference: </strong>" . 
+                        $this->record->reference . "<br><br>" . "<strong>Pass/Fail: </strong> " . $this->record->pass_fail . "<br><br>" . "<strong>Type of Error: </strong>" . 
                         $this->record->type_of_error . "<br><br>" . "<strong>Description of Error: </strong>" . $this->record->description_of_error . 
                         "<br><br><br>" . "<strong>Status: </strong>" . $this->record->aud_status;
                         
@@ -56,4 +80,3 @@ class CreateAudit extends CreateRecord
     }
 
 }
-

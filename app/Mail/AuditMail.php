@@ -38,6 +38,7 @@ class AuditMail extends Mailable
     {
         return new Content(
             view: 'email.auditmail',
+            with: ['body' => $this->body],
         );
     }
 
