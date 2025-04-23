@@ -188,7 +188,7 @@ class PhoneQCResource extends Resource
                                     ->searchable(),
                                 Forms\Components\TextInput::make('pqc_weightage')->label('Weightage')
                                     ->readOnly(),
-                                Forms\Components\TextInput::make('comments'),
+                                Forms\Components\TextInput::make('pqc_comments')->label('Comments'),
                             ])->columns(4)
                             ->deleteAction(
                                 fn (Forms\Components\Actions\Action $action) => $action
@@ -425,7 +425,11 @@ class PhoneQCResource extends Resource
                                         TextEntry::make('category'),
                                         TextEntry::make('sub_category')->label('Sub-Category'),
                                         TextEntry::make('pqc_weightage')->label('Weightage'),
-                                    ])
+                                    ]),
+                                RepeatableEntry::make('pqc_scorecard')->label('')
+                                    ->schema([
+                                        TextEntry::make('pqc_comments')->label('Comments'),
+                                        ])
                             ]),
                         Tabs\Tab::make('Dispute Remarks')
                             ->schema([
