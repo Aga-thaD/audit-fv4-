@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use pxlrbt\FilamentExcel\Columns\Column;
@@ -475,16 +476,41 @@ class AuditResource extends Resource
             $subject = "Audit Disputed: " . $record->id;
             $body = "An audit by " . $user_name . " has been disputed.<br/><br/>Feedback: " . $data['aud_associate_feedback'];
 
-            // Send email to auditors and managers
-            foreach ($auditorRecipients as $recipient) {
-            Mail::to($recipient->email)
-            ->send(new AuditMail($subject, $body));
-            }
-
-            // Send email to the audited person
-            if ($auditedUser) {
-            Mail::to($auditedUser->email)
-            ->send(new AuditMail($subject, $body));
+            try {
+                // Send email to auditors and managers
+                foreach ($auditorRecipients as $recipient) {
+                    try {
+                        Mail::to($recipient->email)
+                            ->send(new AuditMail($subject, $body));
+                        
+                        // Optional: Log successful email
+                        Log::info("Audit email sent successfully to recipient: {$recipient->email}");
+                            } catch (\Exception $e) {
+                        // Handle individual recipient failure
+                        Log::error("Failed to send audit email to {$recipient->email}: " . $e->getMessage());
+                        // Continue with other recipients instead of halting the entire process
+                            }
+                        }
+            
+                // Send email to the audited person
+                if ($auditedUser) {
+                    try {
+                        Mail::to($auditedUser->email)
+                            ->send(new AuditMail($subject, $body));
+                        
+                        // Optional: Log successful email
+                        Log::info("Audit email sent successfully to audited user: {$auditedUser->email}");
+                            } catch (\Exception $e) {
+                        // Log failure for the audited user
+                        Log::error("Failed to send audit email to audited user {$auditedUser->email}: " . $e->getMessage());
+                        // You might want to handle this error differently
+                            }
+                        }
+            } catch (\Exception $e) {
+                // Handle any other unexpected errors
+                Log::error("Fatal error in audit email process: " . $e->getMessage());
+                // You could rethrow the exception or return a response based on your needs
+                throw $e; // or return response()->json(['error' => 'Failed to send audit emails']);
             }
         })
                         ->requiresConfirmation()
