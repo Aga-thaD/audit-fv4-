@@ -52,6 +52,12 @@ class Audit extends Model
     /**
      * Relationship between User and Audit
      */
+
+    protected $casts = [
+        'aud_screenshot' => 'array',
+        'aud_attachmment' => 'array',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
