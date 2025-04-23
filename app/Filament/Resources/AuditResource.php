@@ -524,24 +524,45 @@ class AuditResource extends Resource
                         ->icon('heroicon-o-check-circle')   
                         ->color('success')
                         ->action(function (Audit $record) {
-                            $recipients = User::whereIn('user_role', ['Auditor', 'Manager'])
-                            ->whereJsonContains('user_lob', $record->lob)
-                            ->whereHas('teams', function ($query) {
-                                $query->where('teams.id', auth()->user()->teams->pluck('id'));
-                            })
-                            ->get();
-                            $user_name = User::find($record->user_id)->name;
-                            foreach($recipients as $recipient) {
+                            try {
+                                $recipients = User::whereIn('user_role', ['Auditor', 'Manager'])
+                                    ->whereJsonContains('user_lob', $record->lob)
+                                    ->whereHas('teams', function ($query) {
+                                        $query->where('teams.id', auth()->user()->teams->pluck('id'));
+                                    })
+                                    ->get();
+                                
+                                $user_name = User::find($record->user_id)->name;
                                 $body = "Audit by " . $user_name . " has been acknowledged.";
                                 $title = "Audit Acknowledgement";
-                                Mail::to($recipient)
-                                ->send(new AuditMail($title, $body));
-                            }
-                            $record->update([
-                                'aud_status' => 'Acknowledged',
-                                'aud_acknowledge_timestamp' => now(),
-                            ]);
-                        })
+                                
+                                foreach($recipients as $recipient) {
+                                    try {
+                                        Mail::to($recipient)
+                                            ->send(new AuditMail($title, $body));
+                                        
+                                        // Optional: Log successful email
+                                        Log::info("Audit acknowledgement email sent successfully to: {$recipient->email}");
+                                            } catch (\Exception $e) {
+                                        // Handle individual recipient failure
+                                        Log::error("Failed to send audit acknowledgement email to {$recipient->email}: " . $e->getMessage());
+                                        // Continue with other recipients instead of halting the entire process
+                                            }
+                                        }
+                                
+                                        // Update the record status regardless of email success/failure
+                                        $record->update([
+                                            'aud_status' => 'Acknowledged',
+                                            'aud_acknowledge_timestamp' => now(),
+                                            ]);
+                                
+                                        Log::info("Audit record {$record->id} marked as acknowledged");
+                                } catch (\Exception $e) {
+                                        // Handle any unexpected errors in the entire process
+                                        Log::error("Fatal error in audit acknowledgement process: " . $e->getMessage());
+                                throw $e; // Re-throw to show error in UI or handle as needed
+                                }
+                            })
                         ->requiresConfirmation()
                         ->visible(function (Audit $record) {
                             if($record->aud_status === 'Pending')
