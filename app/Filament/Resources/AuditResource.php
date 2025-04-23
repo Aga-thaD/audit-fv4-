@@ -316,8 +316,8 @@ class AuditResource extends Resource
                                 return ($user->teams->contains('slug', 'truesource-team') || $user->user_role === 'Admin') && $get('lob') !== 'CINTAS ACCOUNTS RECEIVABLE';
                             }),
                         Forms\Components\FileUpload::make('aud_screenshot')->label('Screenshot')
-                            ->maxFiles(5)
                             ->multiple()
+                            ->maxFiles(5)
                             ->visible(function (callable $get) {
                                 $user = Auth::user();
                                 return ($user->teams->contains('slug', 'truesource-team') || $user->user_role === 'Admin') && $get('lob') !== 'CINTAS ACCOUNTS RECEIVABLE';
@@ -521,50 +521,52 @@ class AuditResource extends Resource
                             $record->aud_status === 'Pending' &&
                             (Auth::user()->user_role === 'Associate' ? Auth::id() === $record->user_id : true)
                         ),
-                    Tables\Actions\Action::make('Acknowledge')
+                        Tables\Actions\Action::make('Acknowledge')
                         ->label('Acknowledge')
-                        ->icon('heroicon-o-check-circle')   
+                        ->icon('heroicon-o-check-circle')
                         ->color('success')
                         ->action(function (Audit $record) {
                             try {
-                                $recipients = User::whereIn('user_role', ['Auditor', 'Manager'])
-                                    ->whereJsonContains('user_lob', $record->lob)
-                                    ->whereHas('teams', function ($query) {
-                                        $query->where('teams.id', auth()->user()->teams->pluck('id'));
-                                    })
-                                    ->get();
-                                
-                                $user_name = User::find($record->user_id)->name;
-                                $body = "Audit by " . $user_name . " has been acknowledged.";
-                                $title = "Audit Acknowledgement";
-                                
-                                foreach($recipients as $recipient) {
-                                    try {
-                                        Mail::to($recipient)
-                                            ->send(new AuditMail($title, $body));
-                                        
-                                        // Optional: Log successful email
-                                        Log::info("Audit acknowledgement email sent successfully to: {$recipient->email}");
-                                            } catch (\Exception $e) {
-                                        // Handle individual recipient failure
-                                        Log::error("Failed to send audit acknowledgement email to {$recipient->email}: " . $e->getMessage());
-                                        // Continue with other recipients instead of halting the entire process
-                                            }
+                                // Check if the auditor belongs to the Cintas team
+                                $belongsToCintas = auth()->user()->teams()->where('name', 'Cintas')->exists();
+                    
+                                if (!$belongsToCintas) {
+                                    Log::info("Acknowledgement skipped - auditor not in Cintas team.");
+                                } else {
+                                    $recipients = User::whereIn('user_role', ['Auditor', 'Manager'])
+                                        ->whereJsonContains('user_lob', $record->lob)
+                                        ->whereHas('teams', function ($query) {
+                                            $query->where('teams.name', 'Cintas');
+                                        })
+                                        ->get();
+                    
+                                    $user_name = User::find($record->user_id)->name;
+                                    $body = "Audit by " . $user_name . " has been acknowledged.";
+                                    $title = "Audit Acknowledgement";
+                    
+                                    foreach ($recipients as $recipient) {
+                                        try {
+                                            Mail::to($recipient)
+                                                ->send(new AuditMail($title, $body));
+                    
+                                            Log::info("Audit acknowledgement email sent successfully to: {$recipient->email}");
+                                        } catch (\Exception $e) {
+                                            Log::error("Failed to send audit acknowledgement email to {$recipient->email}: " . $e->getMessage());
                                         }
-                                
-                                        // Update the record status regardless of email success/failure
-                                        $record->update([
-                                            'aud_status' => 'Acknowledged',
-                                            'aud_acknowledge_timestamp' => now(),
-                                            ]);
-                                
-                                        Log::info("Audit record {$record->id} marked as acknowledged");
-                                } catch (\Exception $e) {
-                                        // Handle any unexpected errors in the entire process
-                                        Log::error("Fatal error in audit acknowledgement process: " . $e->getMessage());
-                                throw $e; // Re-throw to show error in UI or handle as needed
+                                    }
                                 }
-                            })
+                    
+                                $record->update([
+                                    'aud_status' => 'Acknowledged',
+                                    'aud_acknowledge_timestamp' => now(),
+                                ]);
+                    
+                                Log::info("Audit record {$record->id} marked as acknowledged");
+                            } catch (\Exception $e) {
+                                Log::error("Fatal error in audit acknowledgement process: " . $e->getMessage());
+                                throw $e;
+                            }
+                        })                    
                         ->requiresConfirmation()
                         ->visible(function (Audit $record) {
                             if($record->aud_status === 'Pending')
