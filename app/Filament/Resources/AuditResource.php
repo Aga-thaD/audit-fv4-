@@ -316,6 +316,8 @@ class AuditResource extends Resource
                                 return ($user->teams->contains('slug', 'truesource-team') || $user->user_role === 'Admin') && $get('lob') !== 'CINTAS ACCOUNTS RECEIVABLE';
                             }),
                         Forms\Components\FileUpload::make('aud_screenshot')->label('Screenshot')
+                            ->maxFiles(5)
+                            ->multiple()
                             ->visible(function (callable $get) {
                                 $user = Auth::user();
                                 return ($user->teams->contains('slug', 'truesource-team') || $user->user_role === 'Admin') && $get('lob') !== 'CINTAS ACCOUNTS RECEIVABLE';
