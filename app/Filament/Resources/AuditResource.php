@@ -23,6 +23,7 @@ use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Actions\ExportAction;
 use Filament\Tables\Table;
+use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -599,11 +600,42 @@ class AuditResource extends Resource
                         ->rows(10),
                     ])
                         ->action(function (Audit $record, array $data) {
-                            $record->update([
-                                'aud_reply_message' => $data['reply_message'],
-                                'aud_reply_timestamp' => now(),
-                            ]);
-                            Log::info("Reply action triggered for audit ID:$record->id");
+                            try {
+                                $currentUser = auth()->user();
+                                $replyMessage = $data['reply_message'];
+                                
+                                // Get the auditor user
+                                $auditor = User::where('name', $record->aud_auditor)->first();
+                                
+                                // Get the auditee user
+                                $auditee = User::find($record->user_id);
+                                
+                                if (!$auditor || !$auditee) {
+                                    Log::error("Could not find auditor or auditee for audit ID: {$record->id}");
+                                    return;
+                                }
+                                
+                                // Determine if current user is the auditor or auditee
+                                $isAuditor = ($currentUser->name === $record->aud_auditor);
+
+                                // Set recipient based on who's replying
+                                $recipient = $isAuditor ? $auditee : $auditor;
+                                
+                                $title = "Reply to Audit Dispute: {$record->id}";
+                                $body = "<strong>Reply from: {$currentUser->name}</strong><br/><br/>" .
+                                        "<strong>Original Audit:</strong> {$record->lob} - {$record->aud_date}<br/>" .
+                                        "<strong>Message:</strong><br/>{$replyMessage}";
+                                
+                                // Send email
+                                Mail::to($recipient->email)
+                                    ->send(new AuditMail($title, $body));
+                                
+                                // Log successful email
+                                Log::info("Audit reply email sent from {$currentUser->name} to {$recipient->email}");
+                                
+                            } catch (\Exception $e) {
+                                Log::error("Failed to send audit reply email: " . $e->getMessage());
+                            }
                         })
                         ->modalHeading('Reply Form')
                         ->modalSubmitActionLabel('Send Reply')
