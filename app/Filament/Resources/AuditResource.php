@@ -26,6 +26,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -581,6 +582,33 @@ class AuditResource extends Resource
                                 }
                             }
                         }),
+                    
+                    Tables\Actions\Action::make('Reply')
+                    ->label('Reply')
+                    ->icon('heroicon-o-inbox')
+                    ->color('info')
+                    ->visible(function (Audit $record) {
+                        $user = auth()->user();
+                        $isTrueSourceTeam = $user->teams->contains('slug', 'truesource-team');
+                        return $isTrueSourceTeam && $record->aud_status === 'Disputed';
+                    })
+                    ->form([
+                        Forms\Components\Textarea::make('reply_message')
+                        ->label('Your Reply')
+                        ->required()
+                        ->rows(10),
+                    ])
+                        ->action(function (Audit $record, array $data) {
+                            $record->update([
+                                'aud_reply_message' => $data['reply_message'],
+                                'aud_reply_timestamp' => now(),
+                            ]);
+                            Log::info("Reply action triggered for audit ID:$record->id");
+                        })
+                        ->modalHeading('Reply Form')
+                        ->modalSubmitActionLabel('Send Reply')
+                        ->requiresConfirmation(),
+
                     Tables\Actions\Action::make('Mark as Pending')
                         ->label('Mark as Pending')
                         ->icon('heroicon-o-arrow-path')
