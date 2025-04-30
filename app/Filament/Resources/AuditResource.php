@@ -659,7 +659,15 @@ class AuditResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                     ExportAction::make(),
-                ]),
+                ])->hidden(function () {
+                    $user = auth()->user();
+
+                    if ($user->user_role === 'Associate' && $user->teams->contains('slug', 'truesource-team')) {
+                        return true;
+                    }
+
+                    return false;
+                }),
             ])
             ->modifyQueryUsing(function (Builder $query) {
                 $user = Auth::user();
