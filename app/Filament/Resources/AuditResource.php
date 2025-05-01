@@ -15,6 +15,7 @@ use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Infolists\Components\Grid;
 use Filament\Infolists\Components\ImageEntry;
+use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Infolists\Components\Section;
 use Filament\Infolists\Components\Tabs;
 use Filament\Infolists\Components\TextEntry;
@@ -439,24 +440,45 @@ class AuditResource extends Resource
                                 abort(403, 'You are not authorized to edit this audit.');
                             }
                         }),
-                    Tables\Actions\Action::make('Dispute')
-                        ->label('Dispute')
-                        ->icon('heroicon-o-exclamation-circle')
-                        ->color('warning')
-                        ->form([
-                            Forms\Components\Textarea::make('aud_associate_feedback')->label('Reason for Dispute')
-                                ->required(),
-                            Forms\Components\FileUpload::make('aud_associate_screenshot')->label('Screenshot')
-                                ->maxFiles(5)
-                                ->multiple(),
-                        ])
-                        ->action(function (Audit $record, array $data) {
-                            $record->update([
-                                'aud_status' => 'Disputed',
-                                'aud_associate_feedback' => $data['aud_associate_feedback'],
-                                'aud_associate_screenshot' => $data['aud_associate_screenshot'],
-                                'aud_dispute_timestamp' => now(),
-                            ]);
+                    // Update the Dispute action
+Tables\Actions\Action::make('Dispute')
+->label('Dispute')
+->icon('heroicon-o-exclamation-circle')
+->color('warning')
+->form([
+    Forms\Components\Textarea::make('aud_associate_feedback')->label('Reason for Dispute')
+        ->required(),
+    Forms\Components\FileUpload::make('aud_associate_screenshot')->label('Screenshot')
+        ->maxFiles(5)
+        ->multiple(),
+])
+->action(function (Audit $record, array $data) {
+    // Get current history or initialize empty array
+    $history = $record->event_history ?? [];
+    
+    // Create new history entry
+    $entry = [
+        'user_id' => Auth::id(),
+        'user_name' => Auth::user()->name,
+        'user_role' => Auth::user()->user_role,
+        'action_type' => 'dispute',
+        'message' => $data['aud_associate_feedback'],
+        'old_status' => $record->aud_status,
+        'new_status' => 'Disputed',
+        'attachments' => $data['aud_associate_screenshot'] ?? [],
+        'timestamp' => now(),
+    ];
+    
+    // Add entry to history
+    $history[] = $entry;
+    
+    $record->update([
+        'aud_status' => 'Disputed',
+        'aud_associate_feedback' => $data['aud_associate_feedback'],
+        'aud_associate_screenshot' => $data['aud_associate_screenshot'],
+        'aud_dispute_timestamp' => now(),
+        'event_history' => $history
+    ]);
 
                                     // Fetch all Auditors and Managers for the same lob & team
         $auditorRecipients = User::whereIn('user_role', ['Auditor', 'Manager'])
@@ -529,6 +551,24 @@ class AuditResource extends Resource
                         ->color('success')
                         ->action(function (Audit $record) {
                             try {
+                                // Get current history or initialize empty array
+                                $history = $record->event_history ?? [];
+                                
+                                // Create new history entry
+                                $entry = [
+                                    'user_id' => Auth::id(),
+                                    'user_name' => Auth::user()->name,
+                                    'user_role' => Auth::user()->user_role,
+                                    'action_type' => 'acknowledge',
+                                    'message' => 'I acknowledge this audit finding.',
+                                    'old_status' => $record->aud_status,
+                                    'new_status' => 'Acknowledged',
+                                    'attachments' => [],
+                                    'timestamp' => now(),
+                                ];
+                                
+                                // Add entry to history
+                                $history[] = $entry;
                                 // Check if the auditor belongs to the Cintas team
                                 $belongsToCintas = auth()->user()->teams()->where('name', 'Cintas')->exists();
                     
@@ -561,6 +601,7 @@ class AuditResource extends Resource
                                 $record->update([
                                     'aud_status' => 'Acknowledged',
                                     'aud_acknowledge_timestamp' => now(),
+                                    'event_history' => $history
                                 ]);
                     
                                 Log::info("Audit record {$record->id} marked as acknowledged");
@@ -603,6 +644,27 @@ class AuditResource extends Resource
                             try {
                                 $currentUser = auth()->user();
                                 $replyMessage = $data['reply_message'];
+
+                                $history = $record->event_history ?? [];
+            
+                            // Create new history entry
+                            $entry = [
+                                'user_id' => Auth::id(),
+                                'user_name' => Auth::user()->name,
+                                'user_role' => Auth::user()->user_role,
+                                'action_type' => 'reply',
+                                'message' => $replyMessage,
+                                'attachments' => $data['attachments'] ?? [],
+                                'timestamp' => now(),
+                            ];
+            
+                            // Add entry to history
+                            $history[] = $entry;
+            
+                             // Update the audit with the new history
+                            $record->update([
+                                'event_history' => $history
+                            ]);
                                 
                                 // Get the auditor user
                                 $auditor = User::where('name', $record->aud_auditor)->first();
@@ -641,12 +703,34 @@ class AuditResource extends Resource
                         ->modalSubmitActionLabel('Send Reply')
                         ->requiresConfirmation(),
 
-                    Tables\Actions\Action::make('Mark as Pending')
+                        Tables\Actions\Action::make('Mark as Pending')
                         ->label('Mark as Pending')
                         ->icon('heroicon-o-arrow-path')
                         ->color('primary')
                         ->action(function (Audit $record) {
-                            $record->update(['aud_status' => 'Pending']);
+                            // Get current history or initialize empty array
+                            $history = $record->event_history ?? [];
+                            
+                            // Create new history entry
+                            $entry = [
+                                'user_id' => Auth::id(),
+                                'user_name' => Auth::user()->name,
+                                'user_role' => Auth::user()->user_role,
+                                'action_type' => 'status_change',
+                                'message' => 'Changed status from Disputed to Pending',
+                                'old_status' => $record->aud_status,
+                                'new_status' => 'Pending',
+                                'attachments' => [],
+                                'timestamp' => now(),
+                            ];
+                            
+                            // Add entry to history
+                            $history[] = $entry;
+                            
+                            $record->update([
+                                'aud_status' => 'Pending',
+                                'event_history' => $history
+                            ]);
                         })
                         ->requiresConfirmation()
                         ->visible(fn (Audit $record) =>
@@ -802,17 +886,70 @@ class AuditResource extends Resource
                                         TextEntry::make('aud_status')->label('Status'),
                                     ])
                             ]),
-                        Tabs\Tab::make('Dispute Remarks')
+                            Tabs\Tab::make('Dispute Remarks')
                             ->schema([
                                 TextEntry::make('aud_associate_feedback')->label('Reason for Dispute'),
                                 ImageEntry::make('aud_associate_screenshot')->label('Screenshot'),
                                 TextEntry::make('aud_dispute_timestamp')->label('Dispute Filed On')
                                     ->timezone('America/New_York')
-                                    ->dateTime('m/d/Y H:i:s'),
+                                    ->dateTime('m/d/Y'),
                                 TextEntry::make('aud_acknowledge_timestamp')->label('Acknowledge Filed On')
                                     ->timezone('America/New_York')
-                                    ->dateTime('m/d/Y H:i:s'),
+                                    ->dateTime('m/d/Y'),
                             ])->visible(fn ($record) => $record->aud_status === 'Disputed'),
+                        Tabs\Tab::make('Event History')
+                            ->schema([
+                                RepeatableEntry::make('event_history')
+                                    ->hiddenLabel()
+                                    ->schema([
+                                        Grid::make(3)
+                                            ->schema([
+                                                TextEntry::make('timestamp')
+                                                    ->label('Date & Time')
+                                                    ->dateTime('m/d/Y')
+                                                    ->timezone('America/New_York')
+                                                    ->columnSpan(1),
+                                                TextEntry::make('user_name')
+                                                    ->label('User')
+                                                    ->columnSpan(1),
+                                                TextEntry::make('action_type')
+                                                    ->label('Action')
+                                                    ->badge()
+                                                    ->color(fn (string $state): string => match ($state) {
+                                                        'dispute' => 'danger',
+                                                        'reply' => 'info',
+                                                        'acknowledge' => 'success',
+                                                        'status_change' => 'warning',
+                                                        default => 'gray',
+                                                    })
+                                                    ->columnSpan(1),
+                                            ]),
+                                        TextEntry::make('message')
+                                            ->label('Message')
+                                            ->columnSpanFull()
+                                            ->html(),
+                                        TextEntry::make('old_status')
+                                            ->label('Previous Status')
+                                            ->visible(fn ($state) => !empty($state))
+                                            ->badge()
+                                            ->color('gray'),
+                                        TextEntry::make('new_status')
+                                            ->label('New Status')
+                                            ->visible(fn ($state) => !empty($state))
+                                            ->badge()
+                                            ->color(fn (string $state): string => match ($state) {
+                                                'Pending' => 'warning',
+                                                'Disputed' => 'danger',
+                                                'Acknowledged' => 'success',
+                                                default => 'gray',
+                                            }),
+                                        ImageEntry::make('attachments')
+                                            ->label('Attachments')
+                                            ->visible(fn ($state) => !empty($state))
+                                            ->columnSpanFull(),
+                                    ])
+                                    ->contained(false),
+                            ])->visible(fn ($record) => !empty($record->event_history)),
                     ])->columnSpanFull(),
             ]);
     }
