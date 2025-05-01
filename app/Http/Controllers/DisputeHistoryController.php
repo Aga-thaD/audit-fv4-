@@ -23,7 +23,7 @@ class DisputeHistoryController extends Controller
         try {
             $request->validate([
                 'message' => 'required|string',
-                'action_type' => 'required|string|in:dispute,reply,acknowledge,status_change',
+                'action_type' => 'required|string|in:dispute,reply,acknowledge,status change to',
                 'attachments' => 'nullable|array',
                 'attachments.*' => 'file|max:10240', // 10MB max per file
             ]);
