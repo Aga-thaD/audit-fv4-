@@ -717,7 +717,7 @@ Tables\Actions\Action::make('Dispute')
                                 'user_name' => Auth::user()->name,
                                 'user_role' => Auth::user()->user_role,
                                 'action_type' => 'status_change',
-                                'message' => 'Changed status from Disputed to Pending',
+                                'message' => 'Status changed from Disputed to Pending',
                                 'old_status' => $record->aud_status,
                                 'new_status' => 'Pending',
                                 'attachments' => [],
