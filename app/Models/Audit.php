@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Support\Facades\Log;
 
 class Audit extends Model
 {
@@ -34,6 +35,7 @@ class Audit extends Model
         'aud_associate_screenshot',
         'aud_dispute_timestamp',
         'aud_acknowledge_timestamp',
+        'event_history',
 
         // Cintas AR specific fields
         'eo_number',
@@ -54,9 +56,45 @@ class Audit extends Model
      */
 
     protected $casts = [
-        'aud_screenshot' => 'array',
-        'aud_attachmment' => 'array',
+        'event_history' => 'array',
+        'aud_date' => 'date',
+        'aud_date_processed' => 'date',
+        'invoice_date' => 'date',
+        'aud_dispute_timestamp' => 'datetime',
+        'aud_acknowledge_timestamp' => 'datetime',
     ];
+
+    public function addHistoryEntry(string $actionType, string $message, ?string $oldStatus = null, ?string $newStatus = null, array $attachments = []): bool
+{
+    try {
+        // Get current history or initialize empty array
+        $history = $this->event_history ?? [];
+        
+        // Create new history entry
+        $entry = [
+            'user_id' => auth()->id(),
+            'user_name' => auth()->user()->name,
+            'user_role' => auth()->user()->user_role,
+            'action_type' => $actionType,
+            'message' => $message,
+            'old_status' => $oldStatus,
+            'new_status' => $newStatus,
+            'attachments' => $attachments,
+            'timestamp' => now()->toIso8601String(),
+        ];
+        
+        // Add entry to history
+        $history[] = $entry;
+        
+        // Update the audit
+        return $this->update([
+            'event_history' => $history
+        ]);
+    } catch (\Exception $e) {
+        Log::error("Failed to add history entry to audit #{$this->id}: " . $e->getMessage());
+        return false;
+    }
+}
 
     public function user()
     {
