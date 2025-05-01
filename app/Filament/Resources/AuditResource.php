@@ -645,7 +645,7 @@ Tables\Actions\Action::make('Dispute')
                                 $currentUser = auth()->user();
                                 $replyMessage = $data['reply_message'];
 
-                             /*   $history = $record->event_history ?? [];
+                                $history = $record->event_history ?? [];
             
                             // Create new history entry
                             $entry = [
@@ -664,7 +664,7 @@ Tables\Actions\Action::make('Dispute')
                              // Update the audit with the new history
                             $record->update([
                                 'event_history' => $history
-                            ]); */
+                            ]);
                                 
                                 // Get the auditor user
                                 $auditor = User::where('name', $record->aud_auditor)->first();
