@@ -65,7 +65,7 @@ class Audit extends Model
         'aud_screenshot' => 'array', // Add this line to cast the field as an array
     ];
 
-    public function addHistoryEntry(string $actionType, string $message, ?string $oldStatus = null, ?string $newStatus = null, array $attachments = []): bool
+    public function addHistoryEntry(string $actionType, string $message, string $reply, string $reason, ?string $oldStatus = null, ?string $newStatus = null, array $attachments = []): bool
 {
     try {
         // Get current history or initialize empty array
@@ -78,10 +78,12 @@ class Audit extends Model
             'user_role' => auth()->user()->user_role,
             'action_type' => $actionType,
             'message' => $message,
+            'reply' => $reply,
+            'reason' => $reason,
             'old_status' => $oldStatus,
             'new_status' => $newStatus,
             'attachments' => $attachments,
-            'timestamp' => now()->toIso8601String(),
+            'timestamp' => now(),
         ];
 
         // Add entry to history

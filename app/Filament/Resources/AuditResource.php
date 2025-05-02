@@ -464,9 +464,8 @@ Tables\Actions\Action::make('Dispute')
         'user_name' => Auth::user()->name,
         'user_role' => Auth::user()->user_role,
         'action_type' => 'dispute',
-        'message' => $data['aud_associate_feedback'],
+        'reason' => $data['aud_associate_feedback'],
         'old_status' => $record->aud_status,
-        'new_status' => 'Disputed',
         'attachments' => $data['aud_associate_screenshot'] ?? [],
         'timestamp' => now(),
     ];
@@ -562,7 +561,7 @@ Tables\Actions\Action::make('Dispute')
                                     'user_name' => Auth::user()->name,
                                     'user_role' => Auth::user()->user_role,
                                     'action_type' => 'acknowledge',
-                                    'message' => 'I acknowledge this audit finding.',
+                                    'message' => 'Acknowledge',
                                     'old_status' => $record->aud_status,
                                     'new_status' => 'Acknowledged',
                                     'attachments' => [],
@@ -655,7 +654,7 @@ Tables\Actions\Action::make('Dispute')
                                 'user_name' => Auth::user()->name,
                                 'user_role' => Auth::user()->user_role,
                                 'action_type' => 'reply',
-                                'message' => $replyMessage,
+                                'reply' => $replyMessage,
                                 'attachments' => $data['attachments'] ?? [],
                                 'timestamp' => now(),
                             ];
@@ -904,6 +903,11 @@ Tables\Actions\Action::make('Dispute')
                                 RepeatableEntry::make('event_history')
                                     ->hiddenLabel()
                                     ->schema([
+                                        TextEntry::make('old_status')
+                                            ->label('Previous Status')
+                                            ->visible(fn ($state) => !empty($state))
+                                            ->badge()
+                                            ->color('gray'),
                                         Grid::make(3)
                                             ->schema([
                                                 TextEntry::make('timestamp')
@@ -914,28 +918,23 @@ Tables\Actions\Action::make('Dispute')
                                                 TextEntry::make('user_name')
                                                     ->label('User')
                                                     ->columnSpan(1),
-                                                TextEntry::make('action_type')
-                                                    ->label('Action')
-                                                    ->badge()
-                                                    ->color(fn (string $state): string => match ($state) {
-                                                        'dispute' => 'danger',
-                                                        'reply' => 'info',
-                                                        'acknowledge' => 'success',
-                                                        'status_change' => 'warning',
-                                                        default => 'gray',
-                                                    })
-                                                    ->columnSpan(1),
+                                                TextEntry::make('reason')
+                                                    ->label('Reason for Dispute')
+                                                    ->visible(fn ($state) => !empty($state))
+                                                    ->columnSpan(1)
+                                                    ->html(),
+                                                TextEntry::make('reply')
+                                                    ->label('Reply')
+                                                    ->visible(fn ($state) => !empty($state))
+                                                    ->columnSpan(1)
+                                                    ->html(),
+                                                TextEntry::make('message')
+                                                    ->label('Message')
+                                                    ->visible(fn ($state) => !empty($state))
+                                                    ->columnSpan(1)
+                                                    ->html(),
                                             ]),
-                                        TextEntry::make('message')
-                                            ->label('Message')
-                                            ->columnSpanFull()
-                                            ->html(),
-                                        TextEntry::make('old_status')
-                                            ->label('Previous Status')
-                                            ->visible(fn ($state) => !empty($state))
-                                            ->badge()
-                                            ->color('gray'),
-                                        TextEntry::make('new_status')
+                                      /*  TextEntry::make('new_status')
                                             ->label('New Status')
                                             ->visible(fn ($state) => !empty($state))
                                             ->badge()
@@ -944,7 +943,7 @@ Tables\Actions\Action::make('Dispute')
                                                 'Disputed' => 'danger',
                                                 'Acknowledged' => 'success',
                                                 default => 'gray',
-                                            }),
+                                            }), */
                                         ImageEntry::make('attachments')
                                             ->label('Attachments')
                                             ->visible(fn ($state) => !empty($state))

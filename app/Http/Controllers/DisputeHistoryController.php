@@ -38,6 +38,8 @@ class DisputeHistoryController extends Controller
                 'user_role' => Auth::user()->user_role,
                 'action_type' => $request->action_type,
                 'message' => $request->message,
+                'reply' => $request->reply,
+                'reason' => $request->reason,
                 'old_status' => $request->old_status ?? null,
                 'new_status' => $request->new_status ?? null,
                 'attachments' => [],
