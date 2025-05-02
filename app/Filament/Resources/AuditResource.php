@@ -105,7 +105,7 @@ class AuditResource extends Resource
                     ->schema([
                         Forms\Components\Grid::make()
                             ->schema([
-                            
+
                                 Forms\Components\Select::make('user_id')->label('Name')
                                     ->required()
                                     ->options(function (callable $get) {
@@ -321,6 +321,8 @@ class AuditResource extends Resource
                         Forms\Components\FileUpload::make('aud_screenshot')->label('Screenshot')
                             ->multiple()
                             ->maxFiles(5)
+                            ->disk('public')
+                            ->directory('audit-screenshots')
                             ->visible(function (callable $get) {
                                 $user = Auth::user();
                                 return ($user->teams->contains('slug', 'truesource-team') || $user->user_role === 'Admin') && $get('lob') !== 'CINTAS ACCOUNTS RECEIVABLE';
@@ -455,7 +457,7 @@ Tables\Actions\Action::make('Dispute')
 ->action(function (Audit $record, array $data) {
     // Get current history or initialize empty array
     $history = $record->event_history ?? [];
-    
+
     // Create new history entry
     $entry = [
         'user_id' => Auth::id(),
@@ -468,10 +470,10 @@ Tables\Actions\Action::make('Dispute')
         'attachments' => $data['aud_associate_screenshot'] ?? [],
         'timestamp' => now(),
     ];
-    
+
     // Add entry to history
     $history[] = $entry;
-    
+
     $record->update([
         'aud_status' => 'Disputed',
         'aud_associate_feedback' => $data['aud_associate_feedback'],
@@ -508,7 +510,7 @@ Tables\Actions\Action::make('Dispute')
                     try {
                         Mail::to($recipient->email)
                             ->send(new AuditMail($subject, $body));
-                        
+
                         // Optional: Log successful email
                         Log::info("Audit email sent successfully to recipient: {$recipient->email}");
                             } catch (\Exception $e) {
@@ -517,13 +519,13 @@ Tables\Actions\Action::make('Dispute')
                         // Continue with other recipients instead of halting the entire process
                             }
                         }
-            
+
                 // Send email to the audited person
                 if ($auditedUser) {
                     try {
                         Mail::to($auditedUser->email)
                             ->send(new AuditMail($subject, $body));
-                        
+
                         // Optional: Log successful email
                         Log::info("Audit email sent successfully to audited user: {$auditedUser->email}");
                             } catch (\Exception $e) {
@@ -553,7 +555,7 @@ Tables\Actions\Action::make('Dispute')
                             try {
                                 // Get current history or initialize empty array
                                 $history = $record->event_history ?? [];
-                                
+
                                 // Create new history entry
                                 $entry = [
                                     'user_id' => Auth::id(),
@@ -566,12 +568,12 @@ Tables\Actions\Action::make('Dispute')
                                     'attachments' => [],
                                     'timestamp' => now(),
                                 ];
-                                
+
                                 // Add entry to history
                                 $history[] = $entry;
                                 // Check if the auditor belongs to the Cintas team
                                 $belongsToCintas = auth()->user()->teams()->where('name', 'Cintas')->exists();
-                    
+
                                 if (!$belongsToCintas) {
                                     Log::info("Acknowledgement skipped - auditor not in Cintas team.");
                                 } else {
@@ -581,35 +583,35 @@ Tables\Actions\Action::make('Dispute')
                                             $query->where('teams.name', 'Cintas');
                                         })
                                         ->get();
-                    
+
                                     $user_name = User::find($record->user_id)->name;
                                     $body = "Audit by " . $user_name . " has been acknowledged.";
                                     $title = "Audit Acknowledgement";
-                    
+
                                     foreach ($recipients as $recipient) {
                                         try {
                                             Mail::to($recipient)
                                                 ->send(new AuditMail($title, $body));
-                    
+
                                             Log::info("Audit acknowledgement email sent successfully to: {$recipient->email}");
                                         } catch (\Exception $e) {
                                             Log::error("Failed to send audit acknowledgement email to {$recipient->email}: " . $e->getMessage());
                                         }
                                     }
                                 }
-                    
+
                                 $record->update([
                                     'aud_status' => 'Acknowledged',
                                     'aud_acknowledge_timestamp' => now(),
                                     'event_history' => $history
                                 ]);
-                    
+
                                 Log::info("Audit record {$record->id} marked as acknowledged");
                             } catch (\Exception $e) {
                                 Log::error("Fatal error in audit acknowledgement process: " . $e->getMessage());
                                 throw $e;
                             }
-                        })                    
+                        })
                         ->requiresConfirmation()
                         ->visible(function (Audit $record) {
                             if($record->aud_status === 'Pending')
@@ -624,7 +626,7 @@ Tables\Actions\Action::make('Dispute')
                                 }
                             }
                         }),
-                    
+
                     Tables\Actions\Action::make('Reply')
                     ->label('Reply')
                     ->icon('heroicon-o-inbox')
@@ -646,7 +648,7 @@ Tables\Actions\Action::make('Dispute')
                                 $replyMessage = $data['reply_message'];
 
                                 $history = $record->event_history ?? [];
-            
+
                             // Create new history entry
                             $entry = [
                                 'user_id' => Auth::id(),
@@ -657,44 +659,44 @@ Tables\Actions\Action::make('Dispute')
                                 'attachments' => $data['attachments'] ?? [],
                                 'timestamp' => now(),
                             ];
-            
+
                             // Add entry to history
                             $history[] = $entry;
-            
+
                              // Update the audit with the new history
                             $record->update([
                                 'event_history' => $history
                             ]);
-                                
+
                                 // Get the auditor user
                                 $auditor = User::where('name', $record->aud_auditor)->first();
-                                
+
                                 // Get the auditee user
                                 $auditee = User::find($record->user_id);
-                                
+
                                 if (!$auditor || !$auditee) {
                                     Log::error("Could not find auditor or auditee for audit ID: {$record->id}");
                                     return;
                                 }
-                                
+
                                 // Determine if current user is the auditor or auditee
                                 $isAuditor = ($currentUser->name === $record->aud_auditor);
 
                                 // Set recipient based on who's replying
                                 $recipient = $isAuditor ? $auditee : $auditor;
-                                
+
                                 $title = "Reply to Audit Dispute: {$record->id}";
                                 $body = "<strong>Reply from: {$currentUser->name}</strong><br/><br/>" .
                                         "<strong>Original Audit:</strong> {$record->lob} - {$record->aud_date}<br/>" .
                                         "<strong>Message:</strong><br/>{$replyMessage}";
-                                
+
                                 // Send email
                                 Mail::to($recipient->email)
                                     ->send(new AuditMail($title, $body));
-                                
+
                                 // Log successful email
                                 Log::info("Audit reply email sent from {$currentUser->name} to {$recipient->email}");
-                                
+
                             } catch (\Exception $e) {
                                 Log::error("Failed to send audit reply email: " . $e->getMessage());
                             }
@@ -710,7 +712,7 @@ Tables\Actions\Action::make('Dispute')
                         ->action(function (Audit $record) {
                             // Get current history or initialize empty array
                             $history = $record->event_history ?? [];
-                            
+
                             // Create new history entry
                             $entry = [
                                 'user_id' => Auth::id(),
@@ -723,10 +725,10 @@ Tables\Actions\Action::make('Dispute')
                                 'attachments' => [],
                                 'timestamp' => now(),
                             ];
-                            
+
                             // Add entry to history
                             $history[] = $entry;
-                            
+
                             $record->update([
                                 'aud_status' => 'Pending',
                                 'event_history' => $history
@@ -1114,7 +1116,7 @@ Tables\Actions\Action::make('Dispute')
                     'Tax Not Included' => 'Tax Not Included',
                     'Incorrect Document Number in Completed Invoice Copy' => 'Incorrect Document Number in Completed Invoice Copy',
                     'Others' => 'Others',
-                    
+
                 ],
                 'MINOR' => [
                     'Failed to follow R&R' => 'Failed to follow R&R',

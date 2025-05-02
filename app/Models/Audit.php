@@ -62,6 +62,7 @@ class Audit extends Model
         'invoice_date' => 'date',
         'aud_dispute_timestamp' => 'datetime',
         'aud_acknowledge_timestamp' => 'datetime',
+        'aud_screenshot' => 'array', // Add this line to cast the field as an array
     ];
 
     public function addHistoryEntry(string $actionType, string $message, ?string $oldStatus = null, ?string $newStatus = null, array $attachments = []): bool
@@ -69,7 +70,7 @@ class Audit extends Model
     try {
         // Get current history or initialize empty array
         $history = $this->event_history ?? [];
-        
+
         // Create new history entry
         $entry = [
             'user_id' => auth()->id(),
@@ -82,10 +83,10 @@ class Audit extends Model
             'attachments' => $attachments,
             'timestamp' => now()->toIso8601String(),
         ];
-        
+
         // Add entry to history
         $history[] = $entry;
-        
+
         // Update the audit
         return $this->update([
             'event_history' => $history
