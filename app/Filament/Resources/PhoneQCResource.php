@@ -61,6 +61,7 @@ class PhoneQCResource extends Resource
                             ->options([
                                 "ERG FOLLOW-UP" => "ERG FOLLOW-UP",
                             ])
+                            ->required
                             ->reactive(),
                         Forms\Components\Select::make('user_id')->label('Name')
                             ->required()
@@ -279,7 +280,7 @@ class PhoneQCResource extends Resource
                                 $query->whereIn('teams.id', auth()->user()->teams->pluck('id'));
                             })
                             ->get();
-                    
+
                                 // Fetch all Auditors and Managers for the same lob & team
                                 $auditorRecipients = User::whereIn('user_role', ['Auditor', 'Manager'])
                                 ->whereJsonContains('user_lob', $record->pqc_lob)
@@ -300,7 +301,7 @@ class PhoneQCResource extends Resource
                                         try {
                                             Mail::to($recipient->email)
                                                 ->send(new AuditMail($subject, $body));
-                                            
+
                                             // Optional: Log successful email
                                             Log::info("Audit email sent successfully to auditor: {$recipient->email}");
                                         } catch (\Exception $e) {
@@ -309,13 +310,13 @@ class PhoneQCResource extends Resource
                                             // Continue with other recipients instead of halting the entire process
                                         }
                                     }
-                                
+
                                 // Send email to the audited person
                                 if ($auditedUser) {
                                     try {
                                     Mail::to($auditedUser->email)
                                     ->send(new AuditMail($subject, $body));
-            
+
                                 // Optional: Log successful email
                                     Log::info("Audit email sent successfully to audited user: {$auditedUser->email}");
                                         } catch (\Exception $e) {
