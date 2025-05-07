@@ -61,7 +61,7 @@ class PhoneQCResource extends Resource
                             ->options([
                                 "ERG FOLLOW-UP" => "ERG FOLLOW-UP",
                             ])
-                            ->required
+                            ->required()
                             ->reactive(),
                         Forms\Components\Select::make('user_id')->label('Name')
                             ->required()
