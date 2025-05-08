@@ -30,6 +30,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
@@ -450,17 +451,24 @@ Tables\Actions\Action::make('Dispute')
 ->form([
     Forms\Components\Textarea::make('aud_associate_feedback')->label('Reason for Dispute')
         ->required(),
-    Forms\Components\FileUpload::make('aud_associate_screenshot')->label('Screenshot')
+        Forms\Components\FileUpload::make('aud_associate_screenshot')->label('Screenshot')
         ->maxFiles(5)
-        ->multiple(),
+        ->multiple()
+        ->nullable(), // Explicitly mark as nullable
 ])
 ->action(function (Audit $record, array $data) {
     // Get current history or initialize empty array
     $history = $record->event_history ?? [];
-
-    // Process the screenshots field - handle empty array case properly
-    $screenshots = !empty($data['aud_associate_screenshot']) ? $data['aud_associate_screenshot'] : null;
-
+    
+    // Get existing record to check current values
+    $existingRecord = Audit::find($record->id);
+    
+    // Properly handle the screenshot field
+    $screenshots = isset($data['aud_associate_screenshot']) ? $data['aud_associate_screenshot'] : $existingRecord->aud_associate_screenshot;
+    
+    // For the history entry, use empty array if null for attachments
+    $attachments = $screenshots ?? [];
+    
     // Create new history entry
     $entry = [
         'user_id' => Auth::id(),
@@ -469,23 +477,36 @@ Tables\Actions\Action::make('Dispute')
         'action_type' => 'dispute',
         'reason' => $data['aud_associate_feedback'],
         'old_status' => $record->aud_status,
-        'attachments' => $screenshots ?? [],
+        'attachments' => $attachments,
         'timestamp' => now(),
     ];
 
     // Add entry to history
     $history[] = $entry;
 
-    $record->update([
-        'aud_status' => 'Disputed',
-        'aud_associate_feedback' => $data['aud_associate_feedback'],
-        'aud_associate_screenshot' => $screenshots,
-        'aud_dispute_timestamp' => now(),
-        'event_history' => $history
-    ]);
+    // Use DB facade to directly update to have more control
+    DB::table('audits')
+        ->where('id', $record->id)
+        ->update([
+            'aud_status' => 'Disputed',
+            'aud_associate_feedback' => $data['aud_associate_feedback'],
+            // Don't update screenshot field if it's not provided
+            'aud_dispute_timestamp' => now(),
+            'event_history' => json_encode($history),
+            'updated_at' => now()
+        ]);
+        
+    // Only update screenshot field if it's provided
+    if (isset($data['aud_associate_screenshot']) && !empty($data['aud_associate_screenshot'])) {
+        DB::table('audits')
+            ->where('id', $record->id)
+            ->update([
+                'aud_associate_screenshot' => json_encode($data['aud_associate_screenshot'])
+            ]);
+    }
 
-                                    // Fetch all Auditors and Managers for the same lob & team
-        $auditorRecipients = User::whereIn('user_role', ['Auditor', 'Manager'])
+    // Fetch all Auditors and Managers for the same lob & team
+    $auditorRecipients = User::whereIn('user_role', ['Auditor', 'Manager'])
         ->whereJsonContains('user_lob', $record->lob)
         ->whereHas('teams', function ($query) {
             $query->whereIn('teams.id', auth()->user()->teams->pluck('id'));
