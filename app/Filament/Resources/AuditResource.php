@@ -479,7 +479,7 @@ Tables\Actions\Action::make('Dispute')
     $record->update([
         'aud_status' => 'Disputed',
         'aud_associate_feedback' => $data['aud_associate_feedback'],
-        'aud_associate_screenshot' => $data['aud_associate_screenshot'],
+        'aud_associate_screenshot' => $screenshots,
         'aud_dispute_timestamp' => now(),
         'event_history' => $history
     ]);
