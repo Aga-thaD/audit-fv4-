@@ -458,6 +458,9 @@ Tables\Actions\Action::make('Dispute')
     // Get current history or initialize empty array
     $history = $record->event_history ?? [];
 
+    // Process the screenshots field - handle empty array case properly
+    $screenshots = !empty($data['aud_associate_screenshot']) ? $data['aud_associate_screenshot'] : null;
+
     // Create new history entry
     $entry = [
         'user_id' => Auth::id(),
@@ -466,7 +469,7 @@ Tables\Actions\Action::make('Dispute')
         'action_type' => 'dispute',
         'reason' => $data['aud_associate_feedback'],
         'old_status' => $record->aud_status,
-        'attachments' => $data['aud_associate_screenshot'] ?? [],
+        'attachments' => $screenshots ?? [],
         'timestamp' => now(),
     ];
 
