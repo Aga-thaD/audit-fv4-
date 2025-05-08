@@ -63,6 +63,7 @@ class Audit extends Model
         'aud_dispute_timestamp' => 'datetime',
         'aud_acknowledge_timestamp' => 'datetime',
         'aud_screenshot' => 'array', // Add this line to cast the field as an array
+        'aud_associate_screenshot' => 'array'
     ];
 
     public function addHistoryEntry(string $actionType, string $message, string $reply, string $reason, ?string $oldStatus = null, ?string $newStatus = null, array $attachments = []): bool
