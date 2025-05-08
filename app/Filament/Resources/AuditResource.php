@@ -513,14 +513,6 @@ Tables\Actions\Action::make('Dispute')
         })
         ->get();
 
-            // Fetch all Auditors and Managers for the same lob & team
-            $auditorRecipients = User::whereIn('user_role', ['Auditor', 'Manager'])
-            ->whereJsonContains('user_lob', $record->lob)
-            ->whereHas('teams', function ($query) {
-            $query->whereIn('teams.id', auth()->user()->teams->pluck('id'));
-            })
-        ->get();
-
             // Fetch the associate (audited person)
             $auditedUser = User::find($record->user_id);
             $user_name = $auditedUser->name;
