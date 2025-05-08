@@ -702,7 +702,7 @@ Tables\Actions\Action::make('Dispute')
 
                                 $title = "Reply to Audit Dispute: {$record->id}";
                                 $body = "<strong>Reply from: {$currentUser->name}</strong><br/><br/>" .
-                                        "<strong>Work Order #:</strong> {$record->lob} - {$record->aud_case_number}<br/>" .
+                                        "<strong>Work Order #:</strong> {$record->aud_case_number} - {$record->lob} <br/>" .
                                         "<strong>Message:</strong><br/>{$replyMessage}";
 
                                 // Send email
