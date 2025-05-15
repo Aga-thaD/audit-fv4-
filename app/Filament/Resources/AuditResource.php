@@ -112,7 +112,7 @@ class AuditResource extends Resource
                                     ->options(function (callable $get) {
                                         $lob = $get('lob');
                                         $query = User::query()
-                                            ->whereNotIn('user_role', ['Admin', 'Manager']);
+                                            ->whereNotIn('user_role', ['Admin', 'Manager', "Auditor"]);
 
                                         if ($lob) {
                                             $query->where(function ($query) use ($lob) {
