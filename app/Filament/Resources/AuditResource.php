@@ -111,18 +111,21 @@ class AuditResource extends Resource
                                     ->required()
                                     ->options(function (callable $get) {
                                         $lob = $get('lob');
+                                        $user = Auth::user(); // Define $user here
+        
                                         $query = User::query()
-                                            ->whereNotIn('user_role', ['Admin', 'Manager', "Auditor"]);
+                                            ->whereNotIn('user_role', ['Admin', 'Manager']);
 
-                                        if ($lob) {
-                                            $query->where(function ($query) use ($lob) {
-                                                $query->whereJsonContains('user_lob', $lob)
-                                                    ->orWhere('user_lob', 'like', '%' . $lob . '%');
-                                            });
-                                        }
+                                    if ($lob) {
+                                        $query->where(function ($query) use ($lob, $user) {
+                                        $query->whereJsonContains('user_lob', $lob)
+                                            ->orWhere('user_lob', 'like', '%' . $lob . '%');
+                                   
+                                        });
+                                    }
 
-                                        return $query->pluck('name', 'id');
-                                    })
+                                    return $query->pluck('name', 'id');
+                                     })
                                     ->reactive()
                                     ->searchable()
                                     ->preload()
@@ -751,7 +754,7 @@ Tables\Actions\Action::make('Dispute')
                         })
                         ->requiresConfirmation()
                         ->visible(fn (Audit $record) =>
-                            in_array(Auth::user()->user_role, ['Admin', 'Manager', 'Auditor']) &&
+                            in_array(Auth::user()->user_role, ['Admin', 'Manager']) &&
                             $record->aud_status === 'Disputed'
                         ),
                 ])
