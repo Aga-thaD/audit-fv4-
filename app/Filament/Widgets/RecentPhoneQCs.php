@@ -92,7 +92,7 @@ class RecentPhoneQCs extends BaseWidget
         return;
     }
 
-    // Auditor (not in erg follow-up case): audits they did or were done on them
+    // Auditor ( who are not in erg follow-up case): audits they did or were done on them
     if ($user->user_role === 'Auditor') {
         $query->where(function ($q) use ($user) {
             $q->where('pqc_auditor', $user->name)
