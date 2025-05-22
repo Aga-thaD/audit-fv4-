@@ -98,7 +98,6 @@ class RecentAudits extends BaseWidget
     // No extra filters for admins or users in both teams
 }
 
-
     protected function applyTrueSourceFilter(Builder $query): void
     {
         $trueSourceTeam = Team::where('slug', 'truesource-team')->first();
