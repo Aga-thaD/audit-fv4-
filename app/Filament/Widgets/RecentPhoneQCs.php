@@ -73,12 +73,12 @@ class RecentPhoneQCs extends BaseWidget
 
     // Special case: Truesource user with LOB 'erg follow-up'
     if ($isInTrueSource && $user->lob === 'erg follow-up') {
-        $query->where('lob', 'erg follow-up');
+        $query->where('pqc_lob', 'erg follow-up');
 
         // Further restrict if Auditor
         if ($user->user_role === 'Auditor') {
             $query->where(function ($q) use ($user) {
-                $q->where('aud_auditor', $user->name)
+                $q->where('pqc_auditor', $user->name)
                   ->orWhere('user_id', $user->id);
             });
         }
@@ -92,10 +92,10 @@ class RecentPhoneQCs extends BaseWidget
         return;
     }
 
-    // Auditor (not in erg follow-up case): audits they did or were done on them
+    // Auditor ( who are not in erg follow-up case): audits they did or were done on them
     if ($user->user_role === 'Auditor') {
         $query->where(function ($q) use ($user) {
-            $q->where('aud_auditor', $user->name)
+            $q->where('pqc_auditor', $user->name)
               ->orWhere('user_id', $user->id);
         });
         return;
