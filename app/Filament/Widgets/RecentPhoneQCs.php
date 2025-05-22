@@ -67,49 +67,21 @@ class RecentPhoneQCs extends BaseWidget
     }
 
     protected function applyUserFilters(Builder $query, $user): void
-   {
-    $userTeams = $user->teams->pluck('slug')->toArray();
-    $isInTrueSource = in_array('truesource-team', $userTeams);
-
-    // Special case: Truesource user with LOB 'erg follow-up'
-    if ($isInTrueSource && $user->lob === 'erg follow-up') {
-        $query->where('lob', 'erg follow-up');
-
-        // Further restrict if Auditor
-        if ($user->user_role === 'Auditor') {
-            $query->where(function ($q) use ($user) {
-                $q->where('aud_auditor', $user->name)
-                  ->orWhere('user_id', $user->id);
-            });
+    {
+        if ($user->user_role === 'Associate') {
+            $query->where('user_id', $user->id);
+            return;
         }
 
-        return;
-    }
+        $userTeams = $user->teams->pluck('slug')->toArray();
 
-    // Associate: only their own audits
-    if ($user->user_role === 'Associate') {
-        $query->where('user_id', $user->id);
-        return;
+        if (in_array('truesource-team', $userTeams) && !in_array('sos-team', $userTeams)) {
+            $this->applyTrueSourceFilter($query);
+        } elseif (!in_array('truesource-team', $userTeams) && in_array('sos-team', $userTeams)) {
+            $this->applySOSFilter($query);
+        }
+        // If user is in both teams or neither (admin), no additional filtering is needed
     }
-
-    // Auditor (not in erg follow-up case): audits they did or were done on them
-    if ($user->user_role === 'Auditor') {
-        $query->where(function ($q) use ($user) {
-            $q->where('aud_auditor', $user->name)
-              ->orWhere('user_id', $user->id);
-        });
-        return;
-    }
-
-    // Default team-based filtering (Manager/Other)
-    if ($isInTrueSource && !in_array('sos-team', $userTeams)) {
-        $this->applyTrueSourceFilter($query);
-    } elseif (!in_array('truesource-team', $userTeams) && in_array('sos-team', $userTeams)) {
-        $this->applySOSFilter($query);
-    }
-
-    // No extra filters for admins or users in both teams
-}
 
     protected function applyTrueSourceFilter(Builder $query): void
     {
